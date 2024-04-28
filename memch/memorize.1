@@ -1,0 +1,50 @@
+.TH memorize 1 memorize
+.SH NAME
+memorize \- help memorize Chinese texts (i.e. poems)
+.SH SYNOPSIS
+.B memorize
+filename
+[line]
+.SH DESCRIPTION
+.PP
+The
+.B memorize
+utility reads UTF-8 Simplified Chinese text from
+.IR file ","
+seperates them by Chinese punctuation into `segments', blanks every
+other blank, displays the rest (punctuation is always displayed and is not a
+part of segments), and asks the user for blanked segments.  The program then
+checks whether the input matches the blanked segments, turning the segment
+green if it matches, yellow if it does not match but the subsequent retry is
+correct (unless if the input is blank), and red if both the current try and the
+subsequent retry do not match.  After all input attempts for the blank segment
+the segment text is also showed.  If
+.IR line
+is provided, only the line with the specified line number is used from
+.IR filename "."
+.PP
+The
+.IR rlwrap "(1)"
+utility is used eto provide line-editing functionality in the wrapper script.
+.SH AUTHORS
+Runxi Yu <https://runxiyu.org/> wrote this program.
+.SH BUGS
+The author is lazy and bad at writing Python programs.  No intentional
+bugs were introduced, but bugs likely exist.  The program style is also
+really bad.
+.SH LICENSE
+.PP
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU Affero General Public License as
+published by the Free Software Foundation, either version 3 of the
+License, or (at your option) any later version.
+.PP
+This program is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+Affero General Public License for more details.
+.PP
+You should have received a copy of the GNU Affero General Public
+License along with this program.  If not, see
+<https://www.gnu.org/licenses/>.
+

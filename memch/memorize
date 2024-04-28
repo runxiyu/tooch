@@ -1,0 +1,3 @@
+#!/bin/bash
+
+rlwrap python3 memorize.py $@
