@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 #
 # Chinese Recitation Utility
-# Copyright (C) 2022  Andrew Yu
+# Copyright (C) 2022  Runxi Yu
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Affero General Public License as
@@ -21,12 +21,17 @@
 # path to a UTF-8-encoded Simplified Chinese plain text file intended to
 # be memorized.
 #
+# For anyone interested in improving this:
+# TODO: Use ncurses or a similar binding instead of input() and clear()
+#
 
 from __future__ import annotations
 from sys import argv, stderr
 import os
 from dataclasses import dataclass
 import random
+import readline
+readline.parse_and_bind('set editing-mode vi')
 
 def warn(s: str) -> None:
     print("%s: %s" % (argv[0], s), file=stderr)
@@ -62,7 +67,7 @@ def print_segments(segments: list[Segment]) -> None:
             print("%s*%s%s" % (segment.color, NORMAL, segment.ending_punctuation), end = "")
 
 def parse_paragraph_to_segments(t: str, first_display: bool = True) -> list[Segment]:
-    if not str: return Paragraph(segments=[])
+    if not t: return []
     my_segments: list[Segment] = []
     i = 0
     current_display = first_display
@@ -175,11 +180,8 @@ def main() -> None:
     print("""Summary:
 %sCorrect:    %d
 %sIncorrect:  %d""" % (CORRECT, corrects, WRONG, wrongs))
-    if (corrects == 0 and wrongs != 0) or random.randint(1, 100) == 1:
-        os.system("open https://users.andrewyu.org/~luk/andrew-leak.mp4")
 
 if __name__ == "__main__":
     main()
 else:
-    os.system("open https://users.andrewyu.org/~luk/andrew-leak.mp4")
     raise SystemExit("Failed to install backdoor.")
