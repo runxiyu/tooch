@@ -1,5 +1,9 @@
 #!/usr/bin/env python3
 
+# This program is public domain, or under the terms of Creative Commons
+# Zero 1.0 Universal, at your choice. In addition, a Waiver of Patent
+# Rights apply. See the LICENSE file for details.
+
 from __future__ import annotations
 import requests
 import time
