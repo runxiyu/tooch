@@ -11,8 +11,8 @@ import sys
 import os
 
 
-def crypt(thing: str, rc4: str) -> str:
-    thing = thing.strip()
+def rc4(plain: str, rc4key: str) -> str:
+    plain = plain.strip()
     i = 0  # loop iterator
     j = 0
     a = 0
@@ -22,10 +22,10 @@ def crypt(thing: str, rc4: str) -> str:
 
     key = 256 * [0]
     sbox = 256 * [0]
-    output = len(thing) * ["\0"]
+    output = len(plain) * ["\0"]
 
     for i in range(256):
-        key[i] = ord(rc4[i % len(rc4)])
+        key[i] = ord(rc4key[i % len(rc4key)])
         sbox[i] = i
 
     for i in range(256):
@@ -34,14 +34,14 @@ def crypt(thing: str, rc4: str) -> str:
         sbox[i] = sbox[j]
         sbox[j] = temp
 
-    for i in range(len(thing)):
+    for i in range(len(plain)):
         a = (a + 1) % 256
         b = (b + sbox[a]) % 256
         temp = sbox[a]
         sbox[a] = sbox[b]
         sbox[b] = temp
         c = (sbox[a] + sbox[b]) % 256
-        temp = ord(thing[i]) ^ sbox[c]  # bitwise XOR
+        temp = ord(plain[i]) ^ sbox[c]  # bitwise XOR
         temp1 = "%0.2X" % temp
         if len(temp1) == 1:
             temp1 = "0" + temp1
@@ -60,7 +60,7 @@ def login(username: str, password: str) -> bytes:
         params={
             "opr": "pwdLogin",
             "userName": username,
-            "pwd": crypt(password, ts),
+            "pwd": rc4(password, ts),
             "rc4Key": ts,
             "auth_tag": ts,
             "rememberPwd": "1",
