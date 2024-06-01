@@ -13,41 +13,25 @@ import os
 
 def rc4(plain: str, rc4key: str) -> str:
     plain = plain.strip()
-    i = 0  # loop iterator
+    key_length = len(rc4key)
+    sbox = list(range(256))
+    key = [ord(rc4key[i % key_length]) for i in range(256)]
+
     j = 0
-    a = 0
-    b = 0
-    c = 0
-    temp = 0  # no idea what this is supposed to be
-
-    key = 256 * [0]
-    sbox = 256 * [0]
-    output = len(plain) * ["\0"]
-
-    for i in range(256):
-        key[i] = ord(rc4key[i % len(rc4key)])
-        sbox[i] = i
-
     for i in range(256):
         j = (j + sbox[i] + key[i]) % 256
-        temp = sbox[i]
-        sbox[i] = sbox[j]
-        sbox[j] = temp
+        sbox[i], sbox[j] = sbox[j], sbox[i]
 
-    for i in range(len(plain)):
+    a = b = 0
+    output = []
+
+    for char in plain:
         a = (a + 1) % 256
         b = (b + sbox[a]) % 256
-        temp = sbox[a]
-        sbox[a] = sbox[b]
-        sbox[b] = temp
+        sbox[a], sbox[b] = sbox[b], sbox[a]
         c = (sbox[a] + sbox[b]) % 256
-        temp = ord(plain[i]) ^ sbox[c]  # bitwise XOR
-        temp1 = "%0.2X" % temp
-        if len(temp1) == 1:
-            temp1 = "0" + temp1
-        elif len(temp1) == 0:
-            temp1 = "00"
-        output[i] = temp1
+        temp = ord(char) ^ sbox[c]
+        output.append(f"{temp:02x}")
 
     return "".join(output).lower()
 
