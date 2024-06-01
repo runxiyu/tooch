@@ -13,9 +13,7 @@ import mimetypes
 # logging.getLogger("msal").setLevel(logging.INFO)
 
 
-def acquire_token_interactive(
-        app: msal.PublicClientApplication, username: str
-) -> str:
+def acquire_token_interactive(app: msal.PublicClientApplication, username: str) -> str:
     result = app.acquire_token_interactive(
         ["User.ReadWrite"],
         login_hint=username,
@@ -28,7 +26,6 @@ def acquire_token_interactive(
         raise ValueError(
             "Authentication error while trying to interactively acquire a token"
         )
-
 
 
 def update_profile_photo(token: str, user_id: str, photo_path: str) -> None:
@@ -49,7 +46,6 @@ def update_profile_photo(token: str, user_id: str, photo_path: str) -> None:
     print(response.content)
 
 
-
 def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("email", help="username@ykpaoschool.cn")
@@ -62,6 +58,6 @@ def main() -> None:
     token = acquire_token_interactive(app, args.email)
     update_profile_photo(token, args.email, args.photo)
 
+
 if __name__ == "__main__":
     main()
-

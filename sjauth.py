@@ -12,26 +12,22 @@ import os
 
 
 def rc4(plain: str, rc4key: str) -> str:
-    plain = plain.strip()
-    key_length = len(rc4key)
     sbox = list(range(256))
-    key = [ord(rc4key[i % key_length]) for i in range(256)]
+    key_length = len(rc4key)
 
     j = 0
     for i in range(256):
-        j = (j + sbox[i] + key[i]) % 256
+        j = (j + sbox[i] + ord(rc4key[i % key_length])) % 256
         sbox[i], sbox[j] = sbox[j], sbox[i]
 
     a = b = 0
     output = []
 
     for char in plain:
-        a = (a + 1) % 256
-        b = (b + sbox[a]) % 256
+        b = (b + sbox[(a := (a + 1) % 256)]) % 256
         sbox[a], sbox[b] = sbox[b], sbox[a]
         c = (sbox[a] + sbox[b]) % 256
-        temp = ord(char) ^ sbox[c]
-        output.append(f"{temp:02x}")
+        output.append(f"{(ord(char) ^ sbox[c]):02x}")
 
     return "".join(output).lower()
 
@@ -44,7 +40,7 @@ def login(username: str, password: str) -> bytes:
         params={
             "opr": "pwdLogin",
             "userName": username,
-            "pwd": rc4(password, ts),
+            "pwd": rc4(password.strip(), ts),
             "rc4Key": ts,
             "auth_tag": ts,
             "rememberPwd": "1",
