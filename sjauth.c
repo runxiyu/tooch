@@ -15,8 +15,6 @@
 
 // I just blindly translated this and it seems to work... didn't bother
 // to really test it with all sorts of data
-// It'll probably choke on null bytes or something but who cares, you
-// can't even have null bytes in environ anyway
 void rc4(const char *plain, const char *rc4key, char *output)
 {
 	int sbox[256];
