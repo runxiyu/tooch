@@ -51,7 +51,7 @@ void login(const char *username, const char *password, char *response)
 {
 	CURL *curl;
 	CURLcode res;
-	char ts[16];
+	char ts[32];
 	char rc4_output[256];
 	long timestamp = (long)(time(NULL) * 100);
 	snprintf(ts, sizeof(ts), "%ld", timestamp);
@@ -119,7 +119,7 @@ int main(int argc, char *argv[])
 		return 2;
 	}
 
-	char response[1024];
+	char response[2048];
 	login(username, password, response);
 	printf("%s\n", response);
 
