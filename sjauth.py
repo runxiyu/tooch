@@ -34,13 +34,14 @@ def rc4(plain: str, rc4key: str) -> str:
 
 def login(username: str, password: str) -> bytes:
 
-    ts = str(int(time.time() * 100))
+    ts = str(int(time.time() * 100))[:-4] + "0000"
+    out = rc4(password.strip(), ts)
     r = requests.post(
         url="http://sjauth.ykpaoschool.cn/ac_portal/login.php",
         params={
             "opr": "pwdLogin",
             "userName": username,
-            "pwd": rc4(password.strip(), ts),
+            "pwd": out,
             "rc4Key": ts,
             "auth_tag": ts,
             "rememberPwd": "1",
