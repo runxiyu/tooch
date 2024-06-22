@@ -16,7 +16,6 @@
 const char PUNCTS[] = "：；。！？，“”‘’";
 // const char PUNCTS[] = ",.";
 
-
 void poof(int sig)
 {
 	endwin();
@@ -42,16 +41,14 @@ void print_segments(struct segment *segments, int segment_count)
 	for (i = 0; i < segment_count; i++) {
 		attron(COLOR_PAIR(segments[i].color));
 		if (segments[i].display)
-			printw("%s%s", segments[i].text,
-			       segments[i].ending_punctuation);
+			printw("%s%s", segments[i].text, segments[i].ending_punctuation);
 		else
 			printw("*%s", segments[i].ending_punctuation);
 		attroff(COLOR_PAIR(segments[i].color));
 	}
 }
 
-struct segment *parse_paragraph_to_segments(const char *t, bool first_display,
-					    int *segment_count)
+struct segment *parse_paragraph_to_segments(const char *t, bool first_display, int *segment_count)
 {
 	int len = strlen(t);
 	struct segment *segments;
@@ -63,7 +60,7 @@ struct segment *parse_paragraph_to_segments(const char *t, bool first_display,
 	if (len == 0)
 		return NULL;
 
-	segments = malloc(sizeof(struct segment) * len);
+	segments = malloc(sizeof(*segments) * len);
 	*segment_count = 0;
 
 	while (true) {
@@ -73,10 +70,8 @@ struct segment *parse_paragraph_to_segments(const char *t, bool first_display,
 			current_punctuation[punct_idx] = '\0';
 			segments[*segment_count].text = strdup(current_text);
 			segments[*segment_count].display = current_display;
-			segments[*segment_count].ending_punctuation =
-			    strdup(current_punctuation);
-			segments[*segment_count].color =
-			    current_display ? NORMAL : BLANK;
+			segments[*segment_count].ending_punctuation = strdup(current_punctuation);
+			segments[*segment_count].color = current_display ? NORMAL : BLANK;
 			(*segment_count)++;
 			current_punctuation[0] = '\0';
 			punct_idx = 0;
@@ -87,14 +82,12 @@ struct segment *parse_paragraph_to_segments(const char *t, bool first_display,
 			current_text[text_idx++] = t[i++];
 		}
 
-		if (i >= len) {
+		if (i >= len) { // FIXME
 			current_text[text_idx] = '\0';
 			segments[*segment_count].text = strdup(current_text);
 			segments[*segment_count].display = current_display;
-			segments[*segment_count].ending_punctuation =
-			    strdup(current_punctuation);
-			segments[*segment_count].color =
-			    current_display ? NORMAL : BLANK;
+			segments[*segment_count].ending_punctuation = strdup(current_punctuation);
+			segments[*segment_count].color = current_display ? NORMAL : BLANK;
 			(*segment_count)++;
 			break;
 		}
@@ -118,8 +111,7 @@ int main(int argc, char *argv[])
 	int corrects = 0;
 
 	if (argc < 2) {
-		warn(argv[0],
-		     "Missing argument: Path to file to be memorized.");
+		warn(argv[0], "Missing argument: Path to file to be memorized.");
 		return 22;
 	}
 
@@ -138,17 +130,10 @@ int main(int argc, char *argv[])
 			if (strlen(line) > 0) {
 				struct segment *parsed_segments;
 				int parsed_count;
-				parsed_segments =
-				    parse_paragraph_to_segments(line,
-								rand() % 2,
-								&parsed_count);
-				segments =
-				    realloc(segments,
-					    sizeof(struct segment) *
-					    (segment_count + parsed_count));
+				parsed_segments = parse_paragraph_to_segments(line, rand() % 2, &parsed_count);
+				segments = realloc(segments, sizeof(struct segment) * (segment_count + parsed_count));
 				for (i = 0; i < parsed_count; i++)
-					segments[segment_count + i] =
-					    parsed_segments[i];
+					segments[segment_count + i] = parsed_segments[i];
 				segment_count += parsed_count;
 				free(parsed_segments);
 			}
@@ -243,11 +228,11 @@ int main(int argc, char *argv[])
 	endwin();
 
 	/*
-	   for (int i = 0; i < segment_count; i++) {
-	   free(segments[i].text);
-	   free(segments[i].ending_punctuation);
-	   }
-	   free(segments);
+	 * for (int i = 0; i < segment_count; i++) {
+	 * 	free(segments[i].text);
+	 * 	free(segments[i].ending_punctuation);
+	 * }
+	 * free(segments);
 	 */
 	// Let the OS handle the freeing instead, but uncomment when valgriding
 
