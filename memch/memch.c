@@ -4,6 +4,7 @@
 #include <stdbool.h>
 #include <ncurses.h>
 #include <time.h>
+#include <signal.h>
 
 #define NORMAL 1
 #define WRONG 2
@@ -14,6 +15,13 @@
 
 const char PUNCTS[] = "：；。！？，“”‘’";
 // const char PUNCTS[] = ",.";
+
+
+void poof(int sig)
+{
+	endwin();
+	exit(0);
+}
 
 void warn(const char *progname, const char *s)
 {
@@ -97,6 +105,8 @@ struct segment *parse_paragraph_to_segments(const char *t, bool first_display,
 
 int main(int argc, char *argv[])
 {
+	signal(SIGINT, poof);
+
 	FILE *file;
 	struct segment *segments = NULL;
 	char line[1000];
@@ -243,5 +253,3 @@ int main(int argc, char *argv[])
 
 	return 0;
 }
-
-// TODO: catch signals and do endwin();
