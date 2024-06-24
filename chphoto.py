@@ -2,12 +2,14 @@
 
 from __future__ import annotations
 import logging
-import msal  # type: ignore
-import requests
 from pprint import pprint
 from typing import Any
 import argparse
 import mimetypes
+import os
+
+import msal  # type: ignore
+import requests
 
 # logging.basicConfig(level=logging.DEBUG)
 # logging.getLogger("msal").setLevel(logging.INFO)
@@ -27,6 +29,20 @@ def acquire_token_interactive(app: msal.PublicClientApplication, username: str) 
             "Authentication error while trying to interactively acquire a token"
         )
 
+def acquire_token_password(app: msal.PublicClientApplication, username: str, password: str) -> str:
+    result = app.acquire_token_by_username_password(
+        username=username,
+        password=password,
+        scopes=["User.ReadWrite"],
+    )
+
+    if "access_token" in result:
+        assert type(result["access_token"]) is str
+        return result["access_token"]
+    else:
+        raise ValueError(
+            "Authentication error while trying to acquire a token using a password"
+        )
 
 def update_profile_photo(token: str, user_id: str, photo_path: str) -> None:
     graph_endpoint = "https://graph.microsoft.com/v1.0"
@@ -50,12 +66,16 @@ def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("email", help="username@ykpaoschool.cn")
     parser.add_argument("photo", help="path to avatar")
+    parser.add_argument('-p', '--password-var', help="environment variable containing the password")
     args = parser.parse_args()
     app = msal.PublicClientApplication(
         "14f8346d-98c9-4f12-875f-3b2cabe7110a",
         authority="https://login.microsoftonline.com/organizations",
     )
-    token = acquire_token_interactive(app, args.email)
+    if args.password_var is None:
+        token = acquire_token_interactive(app, args.email)
+    else:
+        token = acquire_token_password(app, args.email, os.environ[args.password_var])
     update_profile_photo(token, args.email, args.photo)
 
 
