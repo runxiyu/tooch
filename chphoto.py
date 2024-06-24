@@ -1,5 +1,16 @@
 #!/usr/bin/env python3
 
+# crontab to change the profile photo every hour:
+# 0 * * * * $HOME/cronstuff/chphoto.sh
+#
+# and chphoto.sh is just:
+# 
+# cd /home/andrew/cronstuff/
+# . ./venv/bin/activate
+# pass=something ./tooch/chphoto.py -p pass s22537@ykpaoschool.cn ./tooch/sjdb-avatar.png > marker
+# date >> marker
+
+
 from __future__ import annotations
 import logging
 from pprint import pprint
