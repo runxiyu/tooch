@@ -1,6 +1,14 @@
 #!/usr/bin/env python3
-
-# crontab to change the profile photo every hour:
+#
+# SPDX-License-Identifier: CC0-1.0
+#
+# This script allows you to change your Microsoft Outlook photo
+# for YK Pao School. Note that they reset it at seemingly random
+# times every day, so you probably want to run this every hour
+# or something.
+#
+# I used to do "while true; do sleep 3600; ./chphoto.sh; done"
+# but that's obviously stupid, so here's a crontab:
 #
 #    0 * * * * $HOME/cronstuff/chphoto.sh
 #
@@ -10,7 +18,7 @@
 #    . ./venv/bin/activate
 #    pass=XXXXXXXXXXXXXXX ./tooch/chphoto.py -p pass sXXXXX@ykpaoschool.cn ./tooch/sjdb-avatar.png > marker
 #    date >> marker
-
+#
 
 from __future__ import annotations
 import logging
