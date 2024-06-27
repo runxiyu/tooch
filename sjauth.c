@@ -41,13 +41,7 @@ void rc4(const char *plain, const char *rc4key, char *output)
 	output[plain_length * 2] = '\0';
 }
 
-size_t wc(void *ptr, size_t size, size_t nmemb, void *userdata)
-{
-	memcpy(userdata, ptr, size * nmemb);
-	return size * nmemb;
-}
-
-void login(const char *username, const char *password, char *response)
+void login(const char *username, const char *password)
 {
 	CURL *curl;
 	CURLcode res;
@@ -65,9 +59,8 @@ void login(const char *username, const char *password, char *response)
 	curl = curl_easy_init();
 	if (curl) {
 		curl_easy_setopt(curl, CURLOPT_URL, "http://sjauth.ykpaoschool.cn/ac_portal/login.php");
+		
 		curl_easy_setopt(curl, CURLOPT_POSTFIELDS, postfields);
-		curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, wc);
-		curl_easy_setopt(curl, CURLOPT_WRITEDATA, response);
 
 		struct curl_slist *headers = NULL;
 		headers = curl_slist_append(headers, "User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:104.0) Gecko/20100101 Firefox/104.0");
@@ -102,9 +95,7 @@ int main(int argc, char *argv[])
 		return 2;
 	}
 
-	char response[2048];
-	login(username, password, response);
-	printf("%s\n", response);
+	login(username, password);
 
 	return 0;
 }
