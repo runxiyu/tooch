@@ -10,6 +10,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <errno.h>
 #include <time.h>
 #include <curl/curl.h>
 
@@ -41,7 +42,7 @@ void rc4(const char *plain, const char *rc4key, char *output)
 	output[plain_length * 2] = '\0';
 }
 
-void login(const char *username, const char *password)
+int login(const char *username, const char *password)
 {
 	CURL *curl;
 	CURLcode res;
@@ -55,16 +56,21 @@ void login(const char *username, const char *password)
 	char postfields[512];
 	snprintf(postfields, sizeof(postfields), "opr=pwdLogin&userName=%s&pwd=%s&rc4Key=%s&auth_tag=%s&rememberPwd=1", username, rc4_output, ts, ts);
 
-	curl_global_init(CURL_GLOBAL_DEFAULT);
+	if (curl_global_init(CURL_GLOBAL_DEFAULT) != 0) {
+		curl_global_cleanup();
+		fprintf(stderr, "curl_global_init failed");
+		return -1;
+	}
 	curl = curl_easy_init();
 	if (curl) {
 		curl_easy_setopt(curl, CURLOPT_URL, "http://sjauth.ykpaoschool.cn/ac_portal/login.php");
-		
+
+		curl_easy_setopt(curl, CURLOPT_POST, 1L);
 		curl_easy_setopt(curl, CURLOPT_POSTFIELDS, postfields);
 
 		struct curl_slist *headers = NULL;
 		headers = curl_slist_append(headers, "User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:104.0) Gecko/20100101 Firefox/104.0");
-		headers = curl_slist_append(headers, "Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8");
+		headers = curl_slist_append(headers, "Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8");
 		headers = curl_slist_append(headers, "Accept-Language: en-US.en;q=0.5");
 		headers = curl_slist_append(headers, "Content-Type: application/x-www-form-urlencoded; charset=UTF-8");
 		headers = curl_slist_append(headers, "Origin: null");
@@ -77,25 +83,28 @@ void login(const char *username, const char *password)
 
 		curl_slist_free_all(headers);
 		curl_easy_cleanup(curl);
+		curl_global_cleanup();
+		return 0;
+	} else {
+		curl_global_cleanup();
+		fprintf(stderr, "curl_easy_init() failed");
+		return -1;
 	}
-	curl_global_cleanup();
 }
 
 int main(int argc, char *argv[])
 {
 	if (argc != 3) {
 		fprintf(stderr, "%s: Invalid arguments. The first argument shall be your username, and the second shall be the name of the environment variable containing your password.\n", argv[0]);
-		return 1;
+		return EINVAL;
 	}
 
 	const char *username = argv[1];
 	const char *password = getenv(argv[2]);
 	if (!password) {
-		fprintf(stderr, "%s: Environment variable %s does not exist. You shall cause the variable identified by %s to contain your password.\n", argv[0], argv[2], argv[2]);
-		return 2;
+		fprintf(stderr, "%s: Environment variable %s does not exist. You shall cause the environment variable identified by %s to contain your password.\n", argv[0], argv[2], argv[2]);
+		return EINVAL;
 	}
 
-	login(username, password);
-
-	return 0;
+	return login(username, password);
 }
