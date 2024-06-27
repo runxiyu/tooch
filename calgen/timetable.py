@@ -134,5 +134,3 @@ for course in cs:
 with open("%s.ics" % username, "w") as wc:
     wc.writelines(cal.serialize_iter())
     wc.close()
-
-os.system("open %s.ics" % username)
