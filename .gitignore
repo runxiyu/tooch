@@ -1,5 +1,4 @@
 venv
 .ccls-cache
-sjauth
 __pycache__
 *.c~
