@@ -1,3 +1,8 @@
+/* 
+ * Help memorize Chinese poetry/prose
+ * SPDX-License-Identifier: BSD-2-Clause
+ */
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -13,8 +18,8 @@
 #define HALF 5
 #define ACTIVE 6
 
-const char PUNCTS[] = "：；。！？，“”‘’";
-// const char PUNCTS[] = ",.";
+const char PUNCTS[] = "：；。！？，“”‘’"; // ascii quotes don't appear in Chinese text
+// const char PUNCTS[] = ",."; // why would you ever use this
 
 void poof(int sig)
 {
