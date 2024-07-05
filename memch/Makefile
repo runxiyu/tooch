@@ -1,2 +1,5 @@
 memch: memch.c
-	$(CC) -lcurses -o $@ $<
+	$(CC) -lncursesw -o $@ $<
+
+clean:
+	rm memch
