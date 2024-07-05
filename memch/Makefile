@@ -1,5 +1,5 @@
 memch: memch.c
-	$(CC) -lncursesw -o $@ $<
+	$(CC) -D_DEFAULT_SOURCE -std=c11 -lncursesw -o $@ $<
 
 clean:
 	rm memch
