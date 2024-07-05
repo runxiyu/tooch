@@ -13,7 +13,7 @@
 #    0 * * * * $HOME/cronstuff/chphoto.sh
 #
 # and chphoto.sh is just:
-# 
+#
 #    cd $HOME/cronstuff/
 #    . ./venv/bin/activate
 #    pass=XXXXXXXXXXXXXXX ./tooch/chphoto.py -p pass sXXXXX@ykpaoschool.cn ./tooch/sjdb-avatar.png > marker
@@ -49,7 +49,10 @@ def acquire_token_interactive(app: msal.PublicClientApplication, username: str) 
             "Authentication error while trying to interactively acquire a token"
         )
 
-def acquire_token_password(app: msal.PublicClientApplication, username: str, password: str) -> str:
+
+def acquire_token_password(
+    app: msal.PublicClientApplication, username: str, password: str
+) -> str:
     result = app.acquire_token_by_username_password(
         username=username,
         password=password,
@@ -63,6 +66,7 @@ def acquire_token_password(app: msal.PublicClientApplication, username: str, pas
         raise ValueError(
             "Authentication error while trying to acquire a token using a password"
         )
+
 
 def update_profile_photo(token: str, user_id: str, photo_path: str) -> None:
     graph_endpoint = "https://graph.microsoft.com/v1.0"
@@ -86,7 +90,9 @@ def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("email", help="username@ykpaoschool.cn")
     parser.add_argument("photo", help="path to avatar")
-    parser.add_argument('-p', '--password-var', help="environment variable containing the password")
+    parser.add_argument(
+        "-p", "--password-var", help="environment variable containing the password"
+    )
     args = parser.parse_args()
     app = msal.PublicClientApplication(
         "14f8346d-98c9-4f12-875f-3b2cabe7110a",
