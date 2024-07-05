@@ -28,11 +28,8 @@ import argparse
 import mimetypes
 import os
 
-import msal  # type: ignore
 import requests
-
-# logging.basicConfig(level=logging.DEBUG)
-# logging.getLogger("msal").setLevel(logging.INFO)
+import msal  # type: ignore
 
 
 def acquire_token_interactive(app: msal.PublicClientApplication, username: str) -> str:
@@ -75,15 +72,18 @@ def update_profile_photo(token: str, user_id: str, photo_path: str) -> None:
     with open(photo_path, "rb") as photo_file:
         photo_data = photo_file.read()
 
-    headers = {
-        "Authorization": f"Bearer {token}",
-        "Content-Type": mimetypes.guess_type(photo_path)[0],
-    }
-
-    response = requests.put(url, data=photo_data, headers=headers)
+    response = requests.put(
+        url,
+        data=photo_data,
+        headers={
+            "Authorization": f"Bearer {token}",
+            "Content-Type": mimetypes.guess_type(photo_path)[0],
+        },
+    )
 
     print(response.status_code)
-    print(response.content)
+    sys.stdout.buffer.write(response.content + b'\n')
+    sys.stdout.flush()
 
 
 def main() -> None:
@@ -91,7 +91,7 @@ def main() -> None:
     parser.add_argument("email", help="username@ykpaoschool.cn")
     parser.add_argument("photo", help="path to avatar")
     parser.add_argument(
-        "-p", "--password-var", help="environment variable containing the password"
+        "-p", "--passvar", help="environment variable containing the password"
     )
     args = parser.parse_args()
     app = msal.PublicClientApplication(
