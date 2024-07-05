@@ -1,11 +1,8 @@
 /*
  * Script to log in to YK Pao School Songjiang Campus student WiFi
- * Written by Runxi Yu <me@runxiyu.org>
  *
- * This program is public domain, or under the terms of Creative Commons
- * Zero 1.0 Universal, at your choice. In addition, a Waiver of Patent
- * Rights apply. See the LICENSE file for details.
- * SPDX-License-Identifier: CC0-1.0
+ * Copyright (c) 2024 Runxi Yu <https://runxiyu.org>
+ * SPDX-License-Identifier: BSD-2-Clause
  */
 
 #include <stdio.h>

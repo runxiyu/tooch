@@ -1,5 +1,6 @@
 /* 
  * Help memorize Chinese poetry/prose
+ * Copyright (c) 2024 Runxi Yu <https://runxiyu.org>
  * SPDX-License-Identifier: BSD-2-Clause
  */
 
