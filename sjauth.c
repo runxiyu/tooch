@@ -5,6 +5,7 @@
  * This program is public domain, or under the terms of Creative Commons
  * Zero 1.0 Universal, at your choice. In addition, a Waiver of Patent
  * Rights apply. See the LICENSE file for details.
+ * SPDX-License-Identifier: CC0-1.0
  */
 
 #include <stdio.h>
