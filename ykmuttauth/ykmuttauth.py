@@ -27,8 +27,6 @@ import json
 import argparse
 import urllib.parse
 import urllib.request
-import imaplib
-import smtplib
 import base64
 import secrets
 import hashlib
@@ -38,7 +36,6 @@ from pathlib import Path
 import socket
 import http.server
 import subprocess
-import readline
 
 
 registrations = {
@@ -48,13 +45,6 @@ registrations = {
         "token_endpoint": "https://login.microsoftonline.com/ddd3d26c-b197-4d00-a32d-1ffd84c0c295/oauth2/v2.0/token",
         "redirect_uri": "https://login.microsoftonline.com/ddd3d26c-b197-4d00-a32d-1ffd84c0c295/oauth2/nativeclient",
         "tenant": "ddd3d26c-b197-4d00-a32d-1ffd84c0c295",
-        "imap_endpoint": "outlook.office365.com",
-        "smtp_endpoint": "smtp.office365.com",
-        "sasl_method": "XOAUTH2",
-        "scope": (
-            "offline_access https://outlook.office.com/IMAP.AccessAsUser.All "
-            "https://outlook.office.com/SMTP.Send"
-        ),
         "client_id": "fea760d5-b496-4f63-be1e-93855c1c5f78",
         "client_secret": "",
     },
@@ -84,34 +74,25 @@ print("Obtained from token file:", json.dumps(token), file=sys.stderr)
 if not token:
     if not args.authorize:
         sys.exit('You must run script with "--authorize" at least once.')
-    print("Available app and endpoint registrations:", *registrations, file=sys.stderr)
-    token["registration"] = input("OAuth2 registration: ")
+    token["registration"] = "ykps"
     token["email"] = input("Account e-mail address: ")
     token["access_token"] = ""
     token["access_token_expiration"] = ""
     token["refresh_token"] = ""
     writetokenfile()
 
-if token["registration"] not in registrations:
-    sys.exit(
-        f'ERROR: Unknown registration "{token["registration"]}". Delete token file '
-        f"and start over."
-    )
-registration = registrations[token["registration"]]
-
+registration = ykps
 authflow = "localhostauthcode"
 
 baseparams = {"client_id": registration["client_id"], "tenant": registration["tenant"]}
 
 
 def access_token_valid():
-    """Returns True when stored access token exists and is still valid at this time."""
     token_exp = token["access_token_expiration"]
-    return token_exp and datetime.now() < datetime.fromisoformat(token_exp)
+    return token_exp and datetime.now() < datetime.fromisoformat(token_exp) # FIXME: naive TZ
 
 
 def update_tokens(r):
-    """Takes a response dictionary, extracts tokens out of it, and updates token file."""
     token["access_token"] = r["access_token"]
     token["access_token_expiration"] = (
         datetime.now() + timedelta(seconds=int(r["expires_in"]))
@@ -119,16 +100,16 @@ def update_tokens(r):
     if "refresh_token" in r:
         token["refresh_token"] = r["refresh_token"]
     writetokenfile()
-    if args.verbose:
-        print(
-            f'NOTICE: Obtained new access token, expires {token["access_token_expiration"]}.',
-            file=sys.stderr,
-        )
+    print(
+        f'NOTICE: Obtained new access token, expires {token["access_token_expiration"]}.',
+        file=sys.stderr,
+    )
 
 
 if args.authorize:
     p = baseparams.copy()
-    p["scope"] = registration["scope"]
+            
+    p["scope"] = ["offline_access https://outlook.office.com/IMAP.AccessAsUser.All", "https://outlook.office.com/SMTP.Send"]
 
     verifier = secrets.token_urlsafe(90)
     challenge = base64.urlsafe_b64encode(hashlib.sha256(verifier.encode()).digest())[
@@ -234,14 +215,13 @@ if args.authorize:
 
 
 if not access_token_valid():
-    if args.verbose:
-        print(
-            "NOTICE: Invalid or expired access token; using refresh token "
-            "to obtain new access token.",
-            file=sys.stderr,
-        )
     if not token["refresh_token"]:
         sys.exit('ERROR: No refresh token. Run script with "--authorize".')
+    print(
+        "NOTICE: Invalid or expired access token; using refresh token "
+        "to obtain new access token.",
+        file=sys.stderr,
+    )
     p = baseparams.copy()
     p.update(
         {
