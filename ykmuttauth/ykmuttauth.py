@@ -60,15 +60,7 @@ registrations = {
     },
 }
 
-ap = argparse.ArgumentParser(
-    epilog="""
-This script obtains and prints a valid OAuth2 access token.  State is maintained in an
-encrypted TOKENFILE.  Run with "--verbose --authorize" to get started or whenever all
-tokens have expired.  To truly start over from scratch, first delete TOKENFILE.
-"""
-)
-ap.add_argument("-v", "--verbose", action="store_true", help="increase verbosity")
-ap.add_argument("-d", "--debug", action="store_true", help="enable debug output")
+ap = argparse.ArgumentParser()
 ap.add_argument("tokenfile", help="persistent token storage")
 ap.add_argument(
     "-a", "--authorize", action="store_true", help="manually authorize new tokens"
@@ -78,33 +70,21 @@ args = ap.parse_args()
 token = {}
 path = Path(args.tokenfile)
 if path.exists():
-    if 0o777 & path.stat().st_mode != 0o600:
-        sys.exit("Token file has unsafe mode. Suggest deleting and starting over.")
-    try:
-        token = json.loads(path.read_bytes())
-    except subprocess.CalledProcessError:
-        sys.exit(
-            "Difficulty decrypting token file. Is your decryption agent primed for "
-            "non-interactive usage, or an appropriate environment variable such as "
-            "GPG_TTY set to allow interactive agent usage from inside a pipe?"
-        )
+    token = json.loads(path.read_bytes())
 
 
 def writetokenfile():
     """Writes global token dictionary into token file."""
     if not path.exists():
         path.touch(mode=0o600)
-    if 0o777 & path.stat().st_mode != 0o600:
-        sys.exit("Token file has unsafe mode. Suggest deleting and starting over.")
     path.write_bytes(json.dumps(token).encode())
 
 
-if args.debug:
-    print("Obtained from token file:", json.dumps(token))
+print("Obtained from token file:", json.dumps(token), file=sys.stderr)
 if not token:
     if not args.authorize:
         sys.exit('You must run script with "--authorize" at least once.')
-    print("Available app and endpoint registrations:", *registrations)
+    print("Available app and endpoint registrations:", *registrations, file=sys.stderr)
     token["registration"] = input("OAuth2 registration: ")
     token["email"] = input("Account e-mail address: ")
     token["access_token"] = ""
@@ -123,6 +103,7 @@ authflow = "localhostauthcode"
 
 baseparams = {"client_id": registration["client_id"], "tenant": registration["tenant"]}
 
+
 def access_token_valid():
     """Returns True when stored access token exists and is still valid at this time."""
     token_exp = token["access_token_expiration"]
@@ -140,7 +121,8 @@ def update_tokens(r):
     writetokenfile()
     if args.verbose:
         print(
-            f'NOTICE: Obtained new access token, expires {token["access_token_expiration"]}.'
+            f'NOTICE: Obtained new access token, expires {token["access_token_expiration"]}.',
+            file=sys.stderr,
         )
 
 
@@ -149,9 +131,9 @@ if args.authorize:
     p["scope"] = registration["scope"]
 
     verifier = secrets.token_urlsafe(90)
-    challenge = base64.urlsafe_b64encode(
-        hashlib.sha256(verifier.encode()).digest()
-    )[:-1]
+    challenge = base64.urlsafe_b64encode(hashlib.sha256(verifier.encode()).digest())[
+        :-1
+    ]
     redirect_uri = registration["redirect_uri"]
     listen_port = 0
 
@@ -175,7 +157,8 @@ if args.authorize:
     print(
         registration["authorize_endpoint"]
         + "?"
-        + urllib.parse.urlencode(p, quote_via=urllib.parse.quote)
+        + urllib.parse.urlencode(p, quote_via=urllib.parse.quote),
+        file=sys.stderr,
     )
 
     authcode = ""
@@ -183,6 +166,7 @@ if args.authorize:
         "Visit displayed URL to authorize this application. Waiting...",
         end="",
         flush=True,
+        file=sys.stderr,
     )
 
     class MyHandler(http.server.BaseHTTPRequestHandler):
@@ -199,9 +183,7 @@ if args.authorize:
             if "code" in querydict:
                 authcode = querydict["code"][0]
             self.do_HEAD()
-            self.wfile.write(
-                b"<html><head><title>Authorizaton result</title></head>"
-            )
+            self.wfile.write(b"<html><head><title>Authorizaton result</title></head>")
             self.wfile.write(
                 b"<body><p>Authorization redirect completed. You may "
                 b"close this window.</p></body></html>"
@@ -231,22 +213,21 @@ if args.authorize:
             "code_verifier": verifier,
         }
     )
-    print("Exchanging the authorization code for an access token")
+    print("Exchanging the authorization code for an access token", file=sys.stderr)
     try:
         response = urllib.request.urlopen(
             registration["token_endpoint"], urllib.parse.urlencode(p).encode()
         )
     except urllib.error.HTTPError as err:
-        print(err.code, err.reason)
+        print(err.code, err.reason, file=sys.stderr)
         response = err
     response = response.read()
-    if args.debug:
-        print(response)
+    print(response, file=sys.stderr)
     response = json.loads(response)
     if "error" in response:
-        print(response["error"])
+        print(response["error"], file=sys.stderr)
         if "error_description" in response:
-            print(response["error_description"])
+            print(response["error_description"], file=sys.stderr)
         sys.exit(1)
 
     update_tokens(response)
@@ -256,7 +237,8 @@ if not access_token_valid():
     if args.verbose:
         print(
             "NOTICE: Invalid or expired access token; using refresh token "
-            "to obtain new access token."
+            "to obtain new access token.",
+            file=sys.stderr,
         )
     if not token["refresh_token"]:
         sys.exit('ERROR: No refresh token. Run script with "--authorize".')
@@ -273,16 +255,15 @@ if not access_token_valid():
             registration["token_endpoint"], urllib.parse.urlencode(p).encode()
         )
     except urllib.error.HTTPError as err:
-        print(err.code, err.reason)
+        print(err.code, err.reason, file=sys.stderr)
         response = err
     response = response.read()
-    if args.debug:
-        print(response)
+    print(response, file=sys.stderr)
     response = json.loads(response)
     if "error" in response:
-        print(response["error"])
+        print(response["error"], file=sys.stderr)
         if "error_description" in response:
-            print(response["error_description"])
+            print(response["error_description"], file=sys.stderr)
         print('Perhaps refresh token invalid. Try running once with "--authorize"')
         sys.exit(1)
     update_tokens(response)
@@ -292,15 +273,9 @@ if not access_token_valid():
     sys.exit("ERROR: No valid access token. This should not be able to happen.")
 
 
-if args.verbose:
-    print("Access Token: ", end="")
+# print("Access Token: ", end="", file=sys.stderr)
 print(token["access_token"])
 
 
 def build_sasl_string(user, host, port, bearer_token):
-    """Build appropriate SASL string, which depends on cloud server's supported SASL method."""
-    if registration["sasl_method"] == "OAUTHBEARER":
-        return f"n,a={user},\1host={host}\1port={port}\1auth=Bearer {bearer_token}\1\1"
-    if registration["sasl_method"] == "XOAUTH2":
-        return f"user={user}\1auth=Bearer {bearer_token}\1\1"
-    sys.exit(f'Unknown SASL method {registration["sasl_method"]}.')
+    return f"user={user}\1auth=Bearer {bearer_token}\1\1"
