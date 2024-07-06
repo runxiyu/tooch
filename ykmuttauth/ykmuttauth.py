@@ -42,39 +42,8 @@ import http.server
 import subprocess
 import readline
 
-ENCRYPTION_PIPE = ["cat"]
-DECRYPTION_PIPE = ["cat"]
 
 registrations = {
-    # 'google': {
-    #     'authorize_endpoint': 'https://accounts.google.com/o/oauth2/auth',
-    #     'devicecode_endpoint': 'https://oauth2.googleapis.com/device/code',
-    #     'token_endpoint': 'https://accounts.google.com/o/oauth2/token',
-    #     'redirect_uri': 'urn:ietf:wg:oauth:2.0:oob',
-    #     'imap_endpoint': 'imap.gmail.com',
-    #     'pop_endpoint': 'pop.gmail.com',
-    #     'smtp_endpoint': 'smtp.gmail.com',
-    #     'sasl_method': 'OAUTHBEARER',
-    #     'scope': 'https://mail.google.com/',
-    #     'client_id': '',
-    #     'client_secret': '',
-    # },
-    # 'microsoft': {
-    #     'authorize_endpoint': 'https://login.microsoftonline.com/common/oauth2/v2.0/authorize',
-    #     'devicecode_endpoint': 'https://login.microsoftonline.com/common/oauth2/v2.0/devicecode',
-    #     'token_endpoint': 'https://login.microsoftonline.com/common/oauth2/v2.0/token',
-    #     'redirect_uri': 'https://login.microsoftonline.com/common/oauth2/nativeclient',
-    #     'tenant': 'common',
-    #     'imap_endpoint': 'outlook.office365.com',
-    #     'pop_endpoint': 'outlook.office365.com',
-    #     'smtp_endpoint': 'smtp.office365.com',
-    #     'sasl_method': 'XOAUTH2',
-    #     'scope': ('offline_access https://outlook.office.com/IMAP.AccessAsUser.All '
-    #               'https://outlook.office.com/POP.AccessAsUser.All '
-    #               'https://outlook.office.com/SMTP.Send'),
-    #     'client_id': '',
-    #     'client_secret': '',
-    # },
     "ykps": {
         "authorize_endpoint": "https://login.microsoftonline.com/ddd3d26c-b197-4d00-a32d-1ffd84c0c295/oauth2/v2.0/authorize",
         "devicecode_endpoint": "https://login.microsoftonline.com/ddd3d26c-b197-4d00-a32d-1ffd84c0c295/oauth2/v2.0/devicecode",
@@ -122,10 +91,7 @@ if path.exists():
     if 0o777 & path.stat().st_mode != 0o600:
         sys.exit("Token file has unsafe mode. Suggest deleting and starting over.")
     try:
-        sub = subprocess.run(
-            DECRYPTION_PIPE, check=True, input=path.read_bytes(), capture_output=True
-        )
-        token = json.loads(sub.stdout)
+        token = json.loads(path.read_bytes())
     except subprocess.CalledProcessError:
         sys.exit(
             "Difficulty decrypting token file. Is your decryption agent primed for "
@@ -140,13 +106,7 @@ def writetokenfile():
         path.touch(mode=0o600)
     if 0o777 & path.stat().st_mode != 0o600:
         sys.exit("Token file has unsafe mode. Suggest deleting and starting over.")
-    sub2 = subprocess.run(
-        ENCRYPTION_PIPE,
-        check=True,
-        input=json.dumps(token).encode(),
-        capture_output=True,
-    )
-    path.write_bytes(sub2.stdout)
+    path.write_bytes(json.dumps(token).encode())
 
 
 if args.debug:
