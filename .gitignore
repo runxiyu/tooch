@@ -2,3 +2,4 @@ venv
 .ccls-cache
 __pycache__
 *.c~
+bin
