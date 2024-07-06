@@ -15,8 +15,7 @@
  * and chphoto.sh is just:
  *
  *    cd $HOME/cronstuff/
- *    . ./venv/bin/activate
- *    pass=XXXXXXXXXXXXXXX ./tooch/chphoto.py -p pass sXXXXX@ykpaoschool.cn ./tooch/sjdb-avatar.png > marker
+ *    pass=XXXXXXXXXXXXXXX ./tooch/chphoto/chphoto -passvar pass -email sXXXXX@ykpaoschool.cn -photo ./tooch/sjdb-avatar.png > marker
  *    date >> marker
  */
 
