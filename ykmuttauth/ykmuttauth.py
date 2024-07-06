@@ -37,19 +37,6 @@ import socket
 import http.server
 import subprocess
 
-
-registrations = {
-    "ykps": {
-        "authorize_endpoint": "https://login.microsoftonline.com/ddd3d26c-b197-4d00-a32d-1ffd84c0c295/oauth2/v2.0/authorize",
-        "devicecode_endpoint": "https://login.microsoftonline.com/ddd3d26c-b197-4d00-a32d-1ffd84c0c295/oauth2/v2.0/devicecode",
-        "token_endpoint": "https://login.microsoftonline.com/ddd3d26c-b197-4d00-a32d-1ffd84c0c295/oauth2/v2.0/token",
-        "redirect_uri": "https://login.microsoftonline.com/ddd3d26c-b197-4d00-a32d-1ffd84c0c295/oauth2/nativeclient",
-        "tenant": "ddd3d26c-b197-4d00-a32d-1ffd84c0c295",
-        "client_id": "fea760d5-b496-4f63-be1e-93855c1c5f78",
-        "client_secret": "",
-    },
-}
-
 ap = argparse.ArgumentParser()
 ap.add_argument("tokenfile", help="persistent token storage")
 ap.add_argument(
@@ -81,7 +68,15 @@ if not token:
     token["refresh_token"] = ""
     writetokenfile()
 
-registration = ykps
+registration = {
+    "authorize_endpoint": "https://login.microsoftonline.com/ddd3d26c-b197-4d00-a32d-1ffd84c0c295/oauth2/v2.0/authorize",
+    "devicecode_endpoint": "https://login.microsoftonline.com/ddd3d26c-b197-4d00-a32d-1ffd84c0c295/oauth2/v2.0/devicecode",
+    "token_endpoint": "https://login.microsoftonline.com/ddd3d26c-b197-4d00-a32d-1ffd84c0c295/oauth2/v2.0/token",
+    "redirect_uri": "https://login.microsoftonline.com/ddd3d26c-b197-4d00-a32d-1ffd84c0c295/oauth2/nativeclient",
+    "tenant": "ddd3d26c-b197-4d00-a32d-1ffd84c0c295",
+    "client_id": "fea760d5-b496-4f63-be1e-93855c1c5f78",
+    "client_secret": "",
+}
 authflow = "localhostauthcode"
 
 baseparams = {"client_id": registration["client_id"], "tenant": registration["tenant"]}
@@ -89,7 +84,9 @@ baseparams = {"client_id": registration["client_id"], "tenant": registration["te
 
 def access_token_valid():
     token_exp = token["access_token_expiration"]
-    return token_exp and datetime.now() < datetime.fromisoformat(token_exp) # FIXME: naive TZ
+    return token_exp and datetime.now() < datetime.fromisoformat(
+        token_exp
+    )  # FIXME: naive TZ
 
 
 def update_tokens(r):
@@ -108,8 +105,11 @@ def update_tokens(r):
 
 if args.authorize:
     p = baseparams.copy()
-            
-    p["scope"] = ["offline_access https://outlook.office.com/IMAP.AccessAsUser.All", "https://outlook.office.com/SMTP.Send"]
+
+    p["scope"] = [
+        "offline_access https://outlook.office.com/IMAP.AccessAsUser.All",
+        "https://outlook.office.com/SMTP.Send",
+    ]
 
     verifier = secrets.token_urlsafe(90)
     challenge = base64.urlsafe_b64encode(hashlib.sha256(verifier.encode()).digest())[
@@ -253,7 +253,6 @@ if not access_token_valid():
     sys.exit("ERROR: No valid access token. This should not be able to happen.")
 
 
-# print("Access Token: ", end="", file=sys.stderr)
 print(token["access_token"])
 
 
