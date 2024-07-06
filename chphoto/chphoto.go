@@ -2,21 +2,6 @@
  * Copyright (c) 2024 Runxi Yu <https://runxiyu.org>
  * SPDX-License-Identifier: BSD-2-Clause
  *
- * This script allows you to change your Microsoft Outlook photo
- * for YK Pao School. Note that they reset it at seemingly random
- * times every day, so you probably want to run this every hour
- * or something.
- *
- * I used to do "while true; do sleep 3600; ./chphoto.sh; done"
- * but that's obviously stupid, so here's a crontab:
- *
- *    0 * * * * $HOME/cronstuff/chphoto.sh
- *
- * and chphoto.sh is just:
- *
- *    cd $HOME/cronstuff/
- *    pass=XXXXXXXXXXXXXXX ./tooch/chphoto/chphoto -passvar pass -email sXXXXX@ykpaoschool.cn -photo ./tooch/sjdb-avatar.png > marker
- *    date >> marker
  */
 
 package main
@@ -98,10 +83,6 @@ func main() {
 	flag.StringVar(&email, "email", "", "(required) username@ykpaoschool.cn")
 	flag.StringVar(&photo, "photo", "", "(required) path to avatar")
 	flag.StringVar(&passVar, "passvar", "", "environment variable containing the password")
-	flag.Usage = func() {
-		fmt.Fprintf(os.Stderr, "Usage: %s [options] path_to_photo\n", os.Args[0])
-		flag.PrintDefaults()
-	}
 	flag.Parse()
 
 	if photo == "" || email == "" {
