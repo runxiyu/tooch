@@ -121,11 +121,7 @@ registration = registrations[token["registration"]]
 
 authflow = "localhostauthcode"
 
-baseparams = {"client_id": registration["client_id"]}
-# Microsoft uses 'tenant' but Google does not
-if "tenant" in registration:
-    baseparams["tenant"] = registration["tenant"]
-
+baseparams = {"client_id": registration["client_id"], "tenant": registration["tenant"]}
 
 def access_token_valid():
     """Returns True when stored access token exists and is still valid at this time."""
@@ -158,6 +154,7 @@ if args.authorize:
     )[:-1]
     redirect_uri = registration["redirect_uri"]
     listen_port = 0
+
     # Find an available port to listen on
     s = socket.socket()
     s.bind(("127.0.0.1", 0))
@@ -189,18 +186,13 @@ if args.authorize:
     )
 
     class MyHandler(http.server.BaseHTTPRequestHandler):
-        """Handles the browser query resulting from redirect to redirect_uri."""
 
-        # pylint: disable=C0103
         def do_HEAD(self):
-            """Response to a HEAD requests."""
             self.send_response(200)
             self.send_header("Content-type", "text/html")
             self.end_headers()
 
         def do_GET(self):
-            """For GET request, extract code parameter from URL."""
-            # pylint: disable=W0603
             global authcode
             querystring = urllib.parse.urlparse(self.path).query
             querydict = urllib.parse.parse_qs(querystring)
