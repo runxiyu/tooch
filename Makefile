@@ -1,6 +1,6 @@
-.PHONY: all install sjauth memch chphoto ykmuttauth
+.PHONY: all install sjauth memch chphoto ykpsmuttauth
 
-all: sjauth memch chphoto ykmuttauth
+all: sjauth memch chphoto ykpsmuttauth
 
 sjauth:
 	$(MAKE) -C sjauth
@@ -17,11 +17,11 @@ chphoto:
 	$(MAKE) -C chphoto
 	install -c -m 755 chphoto/chphoto bin/
 
-ykmuttauth:
+ykpsmuttauth:
 	mkdir -p bin/
-	$(MAKE) -C ykmuttauth
-	install -c -m 755 ykmuttauth/ykmuttauth bin/
+	$(MAKE) -C ykpsmuttauth
+	install -c -m 755 ykpsmuttauth/ykpsmuttauth bin/
 
 install: all
 	mkdir -p $${HOME}/.local/bin/
-	install -c -m 755 bin/sjauth bin/memch bin/chphoto bin/ykmuttauth $${HOME}/.local/bin/
+	install -c -m 755 bin/sjauth bin/memch bin/chphoto bin/ykpsmuttauth $${HOME}/.local/bin/
