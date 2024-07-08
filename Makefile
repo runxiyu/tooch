@@ -1,4 +1,4 @@
-.PHONY: all install sjauth memch chphoto ykpsmuttauth
+.PHONY: all install sjauth memch chphoto ykpsmuttauth clean uninstall
 
 all: sjauth memch chphoto ykpsmuttauth
 
@@ -31,4 +31,7 @@ clean:
 	$(MAKE) -C memch clean
 	$(MAKE) -C chphoto clean
 	$(MAKE) -C ykpsmuttauth clean
-	rm bin/*
+	rm -f bin/*
+
+uninstall:
+	rm -f $${HOME}/.local/bin/sjauth $${HOME}/.local/bin/memch $${HOME}/.local/bin/chphoto $${HOME}/.local/bin/ykpsmuttauth
