@@ -1,0 +1,9 @@
+#!/bin/sh
+set -eu
+
+[ "$#" -gt 0 ] || exit 1
+
+for i in "$@"
+do
+	chromium-browser --headless --no-pdf-header-footer --print-to-pdf="$(basename "$i").cr.pdf" "$i"
+done

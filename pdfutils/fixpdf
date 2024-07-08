@@ -1,0 +1,10 @@
+#!/bin/sh
+
+set -eu
+
+[ "$#" -gt 0 ] || exit 1
+
+for i in "$@"
+do
+	gs -dPDFSETTINGS=/prepress -o "$(basename "$i" .pdf).gs.pdf" -sDEVICE=pdfwrite "$i"
+done
