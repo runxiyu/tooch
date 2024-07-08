@@ -7,9 +7,9 @@ Most of these are written in C, Go, shell script, and occasionally prototypes in
 |Program|Language|Description|
 |--|--|--|
 |`chphoto`|Go|Change Outlook profile photos|
-|`memch`|C|Help memorize classical Chinese texts (broken for now due to poor Unicode handling)|
-|`pdfutils`|Shell|Help manipulate PDFs (incomplete)|
-|`sjauth`|C|Log on to <a href="https://ykps.runxiyu.org/wifi">STUWIRELESS</a>|
+|`memch`|C|Help memorize classical Chinese texts|
+|`pdfutils`|Shell|Help manipulate PDFs|
+|`sjauth`|C|Log on to [STUWIRELESS](https://ykps.runxiyu.org/wifi)|
 |`ykpsmuttauth`|Go|Get XOAUTH2 tokens for mutt/aerc for Outlook|
 
 ## Build
