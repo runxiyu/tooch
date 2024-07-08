@@ -27,8 +27,6 @@ import json
 import argparse
 import urllib.parse
 import urllib.request
-import imaplib
-import smtplib
 import base64
 import secrets
 import hashlib
@@ -37,29 +35,23 @@ from datetime import timedelta, datetime
 from pathlib import Path
 import socket
 import http.server
-import subprocess
-import readline
 
-
-registrations = {
-    "ykps": {
-        "authorize_endpoint": "https://login.microsoftonline.com/ddd3d26c-b197-4d00-a32d-1ffd84c0c295/oauth2/v2.0/authorize",
-        "devicecode_endpoint": "https://login.microsoftonline.com/ddd3d26c-b197-4d00-a32d-1ffd84c0c295/oauth2/v2.0/devicecode",
-        "token_endpoint": "https://login.microsoftonline.com/ddd3d26c-b197-4d00-a32d-1ffd84c0c295/oauth2/v2.0/token",
-        "redirect_uri": "https://login.microsoftonline.com/ddd3d26c-b197-4d00-a32d-1ffd84c0c295/oauth2/nativeclient",
-        "tenant": "ddd3d26c-b197-4d00-a32d-1ffd84c0c295",
-        "imap_endpoint": "outlook.office365.com",
-        "smtp_endpoint": "smtp.office365.com",
-        "sasl_method": "XOAUTH2",
-        "scope": (
-            "offline_access https://outlook.office.com/IMAP.AccessAsUser.All "
-            "https://outlook.office.com/SMTP.Send"
-        ),
-        "client_id": "fea760d5-b496-4f63-be1e-93855c1c5f78",
-        "client_secret": "",
-    },
+# REGISTRATION
+registration = {
+    "authorize_endpoint": "https://login.microsoftonline.com/ddd3d26c-b197-4d00-a32d-1ffd84c0c295/oauth2/v2.0/authorize",
+    "devicecode_endpoint": "https://login.microsoftonline.com/ddd3d26c-b197-4d00-a32d-1ffd84c0c295/oauth2/v2.0/devicecode",
+    "token_endpoint": "https://login.microsoftonline.com/ddd3d26c-b197-4d00-a32d-1ffd84c0c295/oauth2/v2.0/token",
+    "redirect_uri": "https://login.microsoftonline.com/ddd3d26c-b197-4d00-a32d-1ffd84c0c295/oauth2/nativeclient",
+    "tenant": "ddd3d26c-b197-4d00-a32d-1ffd84c0c295",
+    "scope": (
+        "offline_access https://outlook.office.com/IMAP.AccessAsUser.All "
+        "https://outlook.office.com/SMTP.Send"
+    ),
+    "client_id": "fea760d5-b496-4f63-be1e-93855c1c5f78",
+    "client_secret": "",
 }
 
+# ARGUMENTS
 ap = argparse.ArgumentParser()
 ap.add_argument("tokenfile", help="persistent token storage")
 ap.add_argument(
@@ -67,11 +59,11 @@ ap.add_argument(
 )
 args = ap.parse_args()
 
+# READ STUFF
 token = {}
 path = Path(args.tokenfile)
 if path.exists():
     token = json.loads(path.read_bytes())
-
 
 def writetokenfile():
     """Writes global token dictionary into token file."""
@@ -79,36 +71,10 @@ def writetokenfile():
         path.touch(mode=0o600)
     path.write_bytes(json.dumps(token).encode())
 
-
-print("Obtained from token file:", json.dumps(token), file=sys.stderr)
-if not token:
-    if not args.authorize:
-        sys.exit('You must run script with "--authorize" at least once.')
-    print("Available app and endpoint registrations:", *registrations, file=sys.stderr)
-    token["registration"] = input("OAuth2 registration: ")
-    token["email"] = input("Account e-mail address: ")
-    token["access_token"] = ""
-    token["access_token_expiration"] = ""
-    token["refresh_token"] = ""
-    writetokenfile()
-
-if token["registration"] not in registrations:
-    sys.exit(
-        f'ERROR: Unknown registration "{token["registration"]}". Delete token file '
-        f"and start over."
-    )
-registration = registrations[token["registration"]]
-
-authflow = "localhostauthcode"
-
-baseparams = {"client_id": registration["client_id"], "tenant": registration["tenant"]}
-
-
 def access_token_valid():
     """Returns True when stored access token exists and is still valid at this time."""
     token_exp = token["access_token_expiration"]
     return token_exp and datetime.now() < datetime.fromisoformat(token_exp)
-
 
 def update_tokens(r):
     """Takes a response dictionary, extracts tokens out of it, and updates token file."""
@@ -124,35 +90,26 @@ def update_tokens(r):
         file=sys.stderr,
     )
 
-
-if args.authorize:
-    p = baseparams.copy()
-    p["scope"] = registration["scope"]
-
+def authorize():
+    p = {"client_id": registration["client_id"], "tenant": registration["tenant"], "scope": registration["scope"]}
     verifier = secrets.token_urlsafe(90)
-    challenge = base64.urlsafe_b64encode(hashlib.sha256(verifier.encode()).digest())[
-        :-1
-    ]
-    redirect_uri = registration["redirect_uri"]
-    listen_port = 0
-
+    challenge = base64.urlsafe_b64encode(hashlib.sha256(verifier.encode()).digest())[:-1]
+    
     # Find an available port to listen on
     s = socket.socket()
     s.bind(("127.0.0.1", 0))
     listen_port = s.getsockname()[1]
     s.close()
+    
     redirect_uri = "http://localhost:" + str(listen_port) + "/"
-    # Probably should edit the port number into the actual redirect URL.
-
-    p.update(
-        {
-            "login_hint": token["email"],
-            "response_type": "code",
-            "redirect_uri": redirect_uri,
-            "code_challenge": challenge,
-            "code_challenge_method": "S256",
-        }
-    )
+    p.update({
+        "login_hint": token["email"],
+        "response_type": "code",
+        "redirect_uri": redirect_uri,
+        "code_challenge": challenge,
+        "code_challenge_method": "S256",
+    })
+    
     print(
         registration["authorize_endpoint"]
         + "?"
@@ -169,20 +126,19 @@ if args.authorize:
     )
 
     class MyHandler(http.server.BaseHTTPRequestHandler):
-
         def do_HEAD(self):
             self.send_response(200)
             self.send_header("Content-type", "text/html")
             self.end_headers()
 
         def do_GET(self):
-            global authcode
+            nonlocal authcode
             querystring = urllib.parse.urlparse(self.path).query
             querydict = urllib.parse.parse_qs(querystring)
             if "code" in querydict:
                 authcode = querydict["code"][0]
             self.do_HEAD()
-            self.wfile.write(b"<html><head><title>Authorizaton result</title></head>")
+            self.wfile.write(b"<html><head><title>Authorization result</title></head>")
             self.wfile.write(
                 b"<body><p>Authorization redirect completed. You may "
                 b"close this window.</p></body></html>"
@@ -197,21 +153,14 @@ if args.authorize:
     if not authcode:
         sys.exit("Did not obtain an authcode.")
 
-    for k in (
-        "response_type",
-        "login_hint",
-        "code_challenge",
-        "code_challenge_method",
-    ):
+    for k in ("response_type", "login_hint", "code_challenge", "code_challenge_method"):
         del p[k]
-    p.update(
-        {
-            "grant_type": "authorization_code",
-            "code": authcode,
-            "client_secret": registration["client_secret"],
-            "code_verifier": verifier,
-        }
-    )
+    p.update({
+        "grant_type": "authorization_code",
+        "code": authcode,
+        "client_secret": registration["client_secret"],
+        "code_verifier": verifier,
+    })
     print("Exchanging the authorization code for an access token", file=sys.stderr)
     try:
         response = urllib.request.urlopen(
@@ -231,8 +180,7 @@ if args.authorize:
 
     update_tokens(response)
 
-
-if not access_token_valid():
+def refresh_token():
     print(
         "NOTICE: Invalid or expired access token; using refresh token "
         "to obtain new access token.",
@@ -240,14 +188,13 @@ if not access_token_valid():
     )
     if not token["refresh_token"]:
         sys.exit('ERROR: No refresh token. Run script with "--authorize".')
-    p = baseparams.copy()
-    p.update(
-        {
-            "client_secret": registration["client_secret"],
-            "refresh_token": token["refresh_token"],
-            "grant_type": "refresh_token",
-        }
-    )
+    p = {
+        "client_id": registration["client_id"],
+        "tenant": registration["tenant"],
+        "client_secret": registration["client_secret"],
+        "refresh_token": token["refresh_token"],
+        "grant_type": "refresh_token",
+    }
     try:
         response = urllib.request.urlopen(
             registration["token_endpoint"], urllib.parse.urlencode(p).encode()
@@ -266,15 +213,26 @@ if not access_token_valid():
         sys.exit(1)
     update_tokens(response)
 
+def main():
+    print("Obtained from token file:", json.dumps(token), file=sys.stderr)
+    if not token:
+        if not args.authorize:
+            sys.exit('You must run script with "--authorize" at least once.')
+        token["email"] = input("Account e-mail address: ")
+        token["access_token"] = ""
+        token["access_token_expiration"] = ""
+        token["refresh_token"] = ""
+        writetokenfile()
 
-if not access_token_valid():
-    sys.exit("ERROR: No valid access token. This should not be able to happen.")
+    if args.authorize:
+        authorize()
+    elif not access_token_valid():
+        refresh_token()
 
+    if not access_token_valid():
+        sys.exit("ERROR: No valid access token. This should not be able to happen.")
 
-# print("Access Token: ", end="", file=sys.stderr)
-print(token["access_token"])
+    print(token["access_token"])
 
-
-def build_sasl_string(user, host, port, bearer_token):
-    return f"user={user}\1auth=Bearer {bearer_token}\1\1"
-
+if __name__ == "__main__":
+    main()
