@@ -67,7 +67,7 @@ func main() {
 			os.Exit(2)
 		}
 	} else { // authorize
-		if !HasSuffix(authorize, "@" + domainpart) {
+		if !strings.HasSuffix(authorize, "@" + domainpart) {
 			fmt.Fprintln(os.Stderr, "bad email or invalid domainpart")
 			os.Exit(2)
 		}
