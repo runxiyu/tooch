@@ -14,4 +14,4 @@ Most of these are written in C, Go, Python, and shell script. While I try to mak
 
 Only GNU Make is supported. Users on BSD systems should call `gmake` instead of `make`.
 
-The top-level makefile simply builds subdirectories. Each subdirectory is a phony target, so you could type `make sjauth` to build `sjauth`. The resulting binary is copied to `bin/sjauth`. The `install` target causes the binaries to be copied over to `~/.local/bin/`.
+The top-level makefile simply builds subdirectories. Each subdirectory is a phony target, so you could type `make sjauth` to build `sjauth`. The resulting binary is copied to `bin/sjauth`. The `install` target *additionally* causes the binaries to be copied over to `~/.local/bin/`.
