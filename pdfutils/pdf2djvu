@@ -1,0 +1,10 @@
+#!/bin/sh
+
+set -eu
+
+[ "$#" -gt 0 ] || exit 1
+
+for i in "$@"
+do
+	pdf2djvu -o "$(basename "$i" .pdf)".djvu --guess-dpi "$i"
+done

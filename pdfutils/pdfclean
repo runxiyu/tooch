@@ -1,0 +1,10 @@
+#!/bin/sh
+
+set -eu
+
+[ "$#" -gt 0 ] || exit 1
+
+for i in "$@"
+do
+	mat2 -L "$1"
+done
