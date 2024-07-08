@@ -28,5 +28,5 @@ The profile pictures are reset approximately every day. Use a cron job, or other
 
 ```sh
 cd $HOME/cronstuff/
-pass=XXXXXXXXXXXXXXX ./tooch/chphoto/chphoto -passvar pass -email sXXXXX@ykpaoschool.cn -photo ./tooch/sjdb-avatar.png
+pass=XXXXXXXXXXXXXXX ./tooch/chphoto/chphoto -passvar pass -email sXXXXX@ykpaoschool.cn -photo ./tooch/chphoto/sjdb-avatar.png
 ```
