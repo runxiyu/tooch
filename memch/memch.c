@@ -8,11 +8,15 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdbool.h>
+#include <wchar.h>
 #include <ncurses.h>
 #include <time.h>
 #include <signal.h>
-#include <wchar.h>
 #include <locale.h>
+#include <unistd.h>
+#include <fcntl.h>
+
+extern NCURSES_EXPORT(int) getn_wstr(wint_t *, int);
 
 #define NORMAL 1
 #define WRONG 2
@@ -210,8 +214,18 @@ int main(int argc, char *argv[])
 		if (!segment->display) {
 			mvprintw(LINES - 2, 0, "* ");
 			echo();
-			getnstr((char *)got, sizeof(got) - 1);
+			getn_wstr(got, sizeof(got) - 1);
 			noecho();
+
+			FILE *fd = fopen("e", "a");
+			fwprintf(fd, L"%ls", got);
+			fclose(fd);
+
+			fd = fopen("f", "a");
+			fwprintf(fd, L"%ls", segment->text);
+			fclose(fd);
+
+			_exit(1);
 
 			if (wcscmp(got, segment->text) == 0) {
 				segment->display = true;
@@ -237,6 +251,7 @@ int main(int argc, char *argv[])
 					wrongs++;
 				}
 			}
+
 
 			n = i;
 			while (n < segment_count && segments[n].display)
