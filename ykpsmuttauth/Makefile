@@ -1,5 +1,7 @@
-# ykpsmuttauth: ykpsmuttauth.py
-# 	install -T -c -m 755 ykpsmuttauth.py ykpsmuttauth
+.PHONY: clean
 
 ykpsmuttauth: ykpsmuttauth.go
 	go build
+
+clean:
+	rm ykpsmuttauth

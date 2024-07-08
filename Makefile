@@ -25,3 +25,10 @@ ykpsmuttauth:
 install: all
 	mkdir -p $${HOME}/.local/bin/
 	install -c -m 755 bin/sjauth bin/memch bin/chphoto bin/ykpsmuttauth $${HOME}/.local/bin/
+
+clean:
+	$(MAKE) -C sjauth clean
+	$(MAKE) -C memch clean
+	$(MAKE) -C chphoto clean
+	$(MAKE) -C ykpsmuttauth clean
+	rm bin/*
