@@ -217,16 +217,6 @@ int main(int argc, char *argv[])
 			getn_wstr(got, sizeof(got) - 1);
 			noecho();
 
-			FILE *fd = fopen("e", "a");
-			fwprintf(fd, L"%ls", got);
-			fclose(fd);
-
-			fd = fopen("f", "a");
-			fwprintf(fd, L"%ls", segment->text);
-			fclose(fd);
-
-			_exit(1);
-
 			if (wcscmp(got, segment->text) == 0) {
 				segment->display = true;
 				segment->color = CORRECT;
@@ -251,7 +241,6 @@ int main(int argc, char *argv[])
 					wrongs++;
 				}
 			}
-
 
 			n = i;
 			while (n < segment_count && segments[n].display)
