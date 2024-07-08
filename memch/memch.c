@@ -21,7 +21,7 @@
 #define HALF 5
 #define ACTIVE 6
 
-const wchar_t PUNCTS[] = L"：；。！？，“”‘’";	// ascii quotes don't appear in Chinese text
+const wchar_t PUNCTS[] = L"\uff1a\uff1b\u3002\uff01\uff1f\uff0c\u201c\u201d\u2018\u2019";	// ascii quotes don't appear in Chinese text
 // const wchar_t PUNCTS[] = L",."; // why would you ever use this
 
 void poof(int sig)
@@ -48,12 +48,15 @@ void print_segments(struct segment *segments, int segment_count)
 
 	for (i = 0; i < segment_count; i++) {
 		attron(COLOR_PAIR(segments[i].color));
-		if (segments[i].display)
-			printw("%ls%ls", segments[i].text,
-			       segments[i].ending_punctuation);
-		else
-			printw("*%ls", segments[i].ending_punctuation);
-		attroff(COLOR_PAIR(segments[i].color));
+		if (segments[i].display) {
+			printw("%ls", segments[i].text);
+			attroff(COLOR_PAIR(segments[i].color));
+			printw("%ls", segments[i].ending_punctuation);
+		} else {
+			printw("*");
+			attroff(COLOR_PAIR(segments[i].color));
+			printw("%ls", segments[i].ending_punctuation);
+		}
 	}
 }
 
@@ -246,7 +249,8 @@ int main(int argc, char *argv[])
 	clear();
 	print_segments(segments, segment_count);
 	printw("\n\n");
-	printw("Summary:\nCorrect:    %d\nIncorrect:  %d\n", corrects, wrongs);
+	printw("Summary:\nCorrect:	%d\nIncorrect:  %d\n", corrects,
+	       wrongs);
 	refresh();
 
 	getch();
@@ -254,8 +258,8 @@ int main(int argc, char *argv[])
 
 	/*
 	 * for (int i = 0; i < segment_count; i++) {
-	 *      free(segments[i].text);
-	 *      free(segments[i].ending_punctuation);
+	 *        free(segments[i].text);
+	 *        free(segments[i].ending_punctuation);
 	 * }
 	 * free(segments);
 	 */
