@@ -119,11 +119,10 @@ def update_tokens(r):
     if "refresh_token" in r:
         token["refresh_token"] = r["refresh_token"]
     writetokenfile()
-    if args.verbose:
-        print(
-            f'NOTICE: Obtained new access token, expires {token["access_token_expiration"]}.',
-            file=sys.stderr,
-        )
+    print(
+        f'NOTICE: Obtained new access token, expires {token["access_token_expiration"]}.',
+        file=sys.stderr,
+    )
 
 
 if args.authorize:
@@ -234,12 +233,11 @@ if args.authorize:
 
 
 if not access_token_valid():
-    if args.verbose:
-        print(
-            "NOTICE: Invalid or expired access token; using refresh token "
-            "to obtain new access token.",
-            file=sys.stderr,
-        )
+    print(
+        "NOTICE: Invalid or expired access token; using refresh token "
+        "to obtain new access token.",
+        file=sys.stderr,
+    )
     if not token["refresh_token"]:
         sys.exit('ERROR: No refresh token. Run script with "--authorize".')
     p = baseparams.copy()
