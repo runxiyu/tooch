@@ -37,6 +37,8 @@ import socket
 import http.server
 import subprocess
 
+class WTF(Exception): pass
+
 ap = argparse.ArgumentParser()
 ap.add_argument("tokenfile", help="persistent token storage")
 ap.add_argument(
@@ -177,7 +179,7 @@ if args.authorize:
             pass
 
     if not authcode:
-        sys.exit("Did not obtain an authcode.")
+        raise WTF("Did not obtain an authcode.")
 
     for k in (
         "response_type",
@@ -250,11 +252,7 @@ if not access_token_valid():
 
 
 if not access_token_valid():
-    sys.exit("ERROR: No valid access token. This should not be able to happen.")
-
+    raise WTF
 
 print(token["access_token"])
 
-
-def build_sasl_string(user, host, port, bearer_token):
-    return f"user={user}\1auth=Bearer {bearer_token}\1\1"
