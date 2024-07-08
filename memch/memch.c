@@ -21,7 +21,7 @@
 #define HALF 5
 #define ACTIVE 6
 
-const wchar_t PUNCTS[] = L"：；。！？，“”‘’"; // ascii quotes don't appear in Chinese text
+const wchar_t PUNCTS[] = L"：；。！？，“”‘’";	// ascii quotes don't appear in Chinese text
 // const wchar_t PUNCTS[] = L",."; // why would you ever use this
 
 void poof(int sig)
@@ -49,14 +49,17 @@ void print_segments(struct segment *segments, int segment_count)
 	for (i = 0; i < segment_count; i++) {
 		attron(COLOR_PAIR(segments[i].color));
 		if (segments[i].display)
-			printw("%ls%ls", segments[i].text, segments[i].ending_punctuation);
+			printw("%ls%ls", segments[i].text,
+			       segments[i].ending_punctuation);
 		else
 			printw("*%ls", segments[i].ending_punctuation);
 		attroff(COLOR_PAIR(segments[i].color));
 	}
 }
 
-struct segment *parse_paragraph_to_segments(const wchar_t *t, bool first_display, int *segment_count)
+struct segment *parse_paragraph_to_segments(const wchar_t *t,
+					    bool first_display,
+					    int *segment_count)
 {
 	int len = wcslen(t);
 	struct segment *segments;
@@ -78,8 +81,10 @@ struct segment *parse_paragraph_to_segments(const wchar_t *t, bool first_display
 			current_punctuation[punct_idx] = L'\0';
 			segments[*segment_count].text = wcsdup(current_text);
 			segments[*segment_count].display = current_display;
-			segments[*segment_count].ending_punctuation = wcsdup(current_punctuation);
-			segments[*segment_count].color = current_display ? NORMAL : BLANK;
+			segments[*segment_count].ending_punctuation =
+			    wcsdup(current_punctuation);
+			segments[*segment_count].color =
+			    current_display ? NORMAL : BLANK;
 			(*segment_count)++;
 			current_punctuation[0] = L'\0';
 			punct_idx = 0;
@@ -90,12 +95,14 @@ struct segment *parse_paragraph_to_segments(const wchar_t *t, bool first_display
 			current_text[text_idx++] = t[i++];
 		}
 
-		if (i >= len) { // FIXME
+		if (i >= len) {	// FIXME
 			current_text[text_idx] = L'\0';
 			segments[*segment_count].text = wcsdup(current_text);
 			segments[*segment_count].display = current_display;
-			segments[*segment_count].ending_punctuation = wcsdup(current_punctuation);
-			segments[*segment_count].color = current_display ? NORMAL : BLANK;
+			segments[*segment_count].ending_punctuation =
+			    wcsdup(current_punctuation);
+			segments[*segment_count].color =
+			    current_display ? NORMAL : BLANK;
 			(*segment_count)++;
 			break;
 		}
@@ -121,7 +128,8 @@ int main(int argc, char *argv[])
 	int corrects = 0;
 
 	if (argc < 2) {
-		warn(argv[0], "Missing argument: Path to file to be memorized.");
+		warn(argv[0],
+		     "Missing argument: Path to file to be memorized.");
 		return 22;
 	}
 
@@ -140,10 +148,17 @@ int main(int argc, char *argv[])
 			if (wcslen(line) > 0) {
 				struct segment *parsed_segments;
 				int parsed_count;
-				parsed_segments = parse_paragraph_to_segments(line, rand() % 2, &parsed_count);
-				segments = realloc(segments, sizeof(struct segment) * (segment_count + parsed_count));
+				parsed_segments =
+				    parse_paragraph_to_segments(line,
+								rand() % 2,
+								&parsed_count);
+				segments =
+				    realloc(segments,
+					    sizeof(struct segment) *
+					    (segment_count + parsed_count));
 				for (i = 0; i < parsed_count; i++)
-					segments[segment_count + i] = parsed_segments[i];
+					segments[segment_count + i] =
+					    parsed_segments[i];
 				segment_count += parsed_count;
 				free(parsed_segments);
 			}
@@ -192,7 +207,7 @@ int main(int argc, char *argv[])
 		if (!segment->display) {
 			mvprintw(LINES - 2, 0, "* ");
 			echo();
-			getnstr((char*)got, sizeof(got) - 1);
+			getnstr((char *)got, sizeof(got) - 1);
 			noecho();
 
 			if (wcscmp(got, segment->text) == 0) {
@@ -206,7 +221,7 @@ int main(int argc, char *argv[])
 			} else {
 				mvprintw(LINES - 2, 0, "Retry: ");
 				echo();
-				getnstr((char*)got, sizeof(got) - 1);
+				getnstr((char *)got, sizeof(got) - 1);
 				noecho();
 
 				if (wcscmp(got, segment->text) == 0) {
@@ -239,8 +254,8 @@ int main(int argc, char *argv[])
 
 	/*
 	 * for (int i = 0; i < segment_count; i++) {
-	 * 	free(segments[i].text);
-	 * 	free(segments[i].ending_punctuation);
+	 *      free(segments[i].text);
+	 *      free(segments[i].ending_punctuation);
 	 * }
 	 * free(segments);
 	 */
