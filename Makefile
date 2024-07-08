@@ -1,6 +1,6 @@
-.PHONY: all install sjauth memch chphoto ykpsmuttauth clean uninstall
+.PHONY: all install sjauth memch chphoto ykpsmuttauth clean uninstall pdfutils
 
-all: sjauth memch chphoto ykpsmuttauth
+all: sjauth memch chphoto ykpsmuttauth pdfutils
 
 sjauth:
 	$(MAKE) -C sjauth
@@ -22,9 +22,13 @@ ykpsmuttauth:
 	$(MAKE) -C ykpsmuttauth
 	install -c -m 755 ykpsmuttauth/ykpsmuttauth bin/
 
+pdfutils:
+	mkdir -p bin/
+	install -c -m 755 pdfutils/* bin/
+
 install: all
 	mkdir -p $${HOME}/.local/bin/
-	install -c -m 755 bin/sjauth bin/memch bin/chphoto bin/ykpsmuttauth $${HOME}/.local/bin/
+	install -c -m 755 bin/* $${HOME}/.local/bin/
 
 clean:
 	$(MAKE) -C sjauth clean
@@ -34,4 +38,5 @@ clean:
 	rm -f bin/*
 
 uninstall:
-	rm -f $${HOME}/.local/bin/sjauth $${HOME}/.local/bin/memch $${HOME}/.local/bin/chphoto $${HOME}/.local/bin/ykpsmuttauth
+	rm -f $${HOME}/.local/bin/sjauth $${HOME}/.local/bin/memch $${HOME}/.local/bin/chphoto $${HOME}/.local/bin/ykpsmuttauth $${HOME}/.local/bin/fixpdf $${HOME}/.local/bin/html2pdf $${HOME}/.local/bin/pdf2djvu $${HOME}/.local/bin/pdfclean
+
