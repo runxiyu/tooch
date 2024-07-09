@@ -54,13 +54,11 @@ void print_segments(struct segment *segments, int segment_count)
 		attron(COLOR_PAIR(segments[i].color));
 		if (segments[i].display) {
 			printw("%ls", segments[i].text);
-			attroff(COLOR_PAIR(segments[i].color));
-			printw("%ls", segments[i].ending_punctuation);
 		} else {
 			printw("*");
-			attroff(COLOR_PAIR(segments[i].color));
-			printw("%ls", segments[i].ending_punctuation);
 		}
+		attroff(COLOR_PAIR(segments[i].color));
+		printw("%ls", segments[i].ending_punctuation);
 	}
 }
 
