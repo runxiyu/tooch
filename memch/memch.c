@@ -4,6 +4,7 @@
  * SPDX-License-Identifier: BSD-2-Clause
  */
 
+#define _XOPEN_SOURCE_EXTENDED
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -15,8 +16,6 @@
 #include <locale.h>
 #include <unistd.h>
 #include <fcntl.h>
-
-extern NCURSES_EXPORT(int) getn_wstr(wint_t *, int);
 
 #define NORMAL 1
 #define WRONG 2
