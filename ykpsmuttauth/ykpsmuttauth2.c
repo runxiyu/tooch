@@ -50,8 +50,7 @@ int read_token_file(const char *filename)
 {
 	struct stat st;
 	if (stat(filename, &st) != 0) {
-		fprintf(stderr, "stat(): %s\n",
-			strerror(errno));
+		fprintf(stderr, "stat(): %s\n", strerror(errno));
 		return -1;
 	}
 
@@ -59,8 +58,7 @@ int read_token_file(const char *filename)
 
 	FILE *file = fopen(filename, "r");
 	if (!file) {
-		fprintf(stderr, "fopen(): %s\n",
-			strerror(errno));
+		fprintf(stderr, "fopen(): %s\n", strerror(errno));
 		return -1;
 	}
 
@@ -122,8 +120,7 @@ int write_token_file(const char *filename)
 
 	FILE *file = fopen(filename, "w");
 	if (!file) {
-		fprintf(stderr, "fopen(): %s\n",
-			strerror(errno));
+		fprintf(stderr, "fopen(): %s\n", strerror(errno));
 		json_object_put(token_json);
 		return -1;
 	}
@@ -248,8 +245,7 @@ int refresh_token()
 	long http_code = 0;
 	curl_easy_getinfo(curl, CURLINFO_RESPONSE_CODE, &http_code);
 	if (http_code != 200) {
-		fprintf(stderr, "HTTP %ld\n",
-			http_code);
+		fprintf(stderr, "HTTP %ld\n", http_code);
 		fprintf(stderr, "REQUEST: %s\n", post_fields);
 		curl_easy_cleanup(curl);
 		if (chunk.response) {
@@ -269,7 +265,8 @@ int refresh_token()
 	}
 
 	if (json_object_object_get_ex(response, "error", NULL)) {
-		fprintf(stderr, "Error in token refresh response (why is it returning 200 then?)\n");
+		fprintf(stderr,
+			"Error in token refresh response (why is it returning 200 then?)\n");
 		json_object_put(response);
 		curl_easy_cleanup(curl);
 		if (chunk.response)
@@ -296,15 +293,13 @@ int main(int argc, char *argv[])
 	fprintf(stderr, "Token file: %s\n", token_file);
 
 	if (read_token_file(token_file) != 0) {
-		fprintf(stderr, "read_token_file(): %s\n",
-			strerror(errno));
+		fprintf(stderr, "read_token_file(): %s\n", strerror(errno));
 		return 1;
 	}
 	fprintf(stderr, "Read token file\n");
 
 	if (!access_token_valid()) {
-		fprintf(stderr,
-			"Access token expired, refreshing token\n");
+		fprintf(stderr, "Access token expired, refreshing token\n");
 		if (refresh_token() != 0) {
 			fprintf(stderr, "refresh_token() failed\n");
 			return 1;
@@ -312,8 +307,7 @@ int main(int argc, char *argv[])
 	}
 
 	if (!access_token_valid()) {
-		fprintf(stderr,
-			"No valid access token, exiting\n");
+		fprintf(stderr, "No valid access token, exiting\n");
 		return 1;
 	}
 
