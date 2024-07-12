@@ -4,6 +4,10 @@
  * SPDX-License-Identifier: BSD-2-Clause
  */
 
+// FIXME: There's something wrong with the buffer length handling
+//        I'm a bit sick so I don't want to figure out why right now
+//        I should probably use libutf rather than wide characters anyway
+
 #define _XOPEN_SOURCE_EXTENDED
 #include <stdio.h>
 #include <stdlib.h>
@@ -78,7 +82,7 @@ struct segment *parse_paragraph_to_segments(const wchar_t *t,
 	segments = malloc(sizeof(*segments) * len);
 	*segment_count = 0;
 
-	while (true) {
+	for (;;) {
 		if (wcschr(PUNCTS, t[i])) {
 			current_punctuation[punct_idx++] = t[i++];
 		} else if (punct_idx > 0) {
@@ -250,21 +254,19 @@ int main(int argc, char *argv[])
 	clear();
 	print_segments(segments, segment_count);
 	printw("\n\n");
-	printw("Summary:\nCorrect:	%d\nIncorrect:  %d\n", corrects,
-	       wrongs);
+	printw("Summary:\n\tCorrect: %d\n\tIncorrect: %d\n", corrects, wrongs);
 	refresh();
 
 	getch();
 	endwin();
 
-	/*
-	 * for (int i = 0; i < segment_count; i++) {
-	 *        free(segments[i].text);
-	 *        free(segments[i].ending_punctuation);
-	 * }
-	 * free(segments);
-	 */
-	// Let the OS handle the freeing instead, but uncomment when valgriding
+	for (int i = 0; i < segment_count; i++) {
+		free(segments[i].text);
+		free(segments[i].ending_punctuation);
+	}
+	free(segments);
+	// Yes, the OS will free things, but I'm kinda convinced that this is
+	// good practice anyways, and there's about no harm.
 
 	return 0;
 }
