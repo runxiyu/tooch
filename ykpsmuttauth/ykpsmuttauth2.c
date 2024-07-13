@@ -219,13 +219,23 @@ int refresh_token()
 		return -1;
 	}
 
-	char post_fields[8192];
-
+	int post_fields_size;
+	char *post_fields;
+	if (!(post_fields = malloc(post_fields_size = snprintf(NULL, 0,
+							       "client_id=%s&tenant=%s&refresh_token=%s&grant_type=refresh_token",
+							       CLIENTID, TENANT,
+							       token.refresh_token))))
+	{
+		fprintf(stderr, "malloc(): %s\n", strerror(errno));
+		return -1;
+	}
 	// FIXME: URL escaping is probably warranted here.
-	if (snprintf(post_fields, sizeof(post_fields),
+	if (snprintf(post_fields, post_fields_size,
 		     "client_id=%s&tenant=%s&refresh_token=%s&grant_type=refresh_token",
-		     CLIENTID, TENANT, token.refresh_token) >= 8192) {
-		fprintf(stderr, "post_fields overflow\n");
+		     CLIENTID, TENANT,
+		     token.refresh_token) >= post_fields_size) {
+		fprintf(stderr,
+			"post_fields overflow which should be impossible\n");
 		return -1;
 	}
 
@@ -257,6 +267,8 @@ int refresh_token()
 		return -1;
 	}
 
+	free(post_fields);
+
 	response = json_tokener_parse(chunk.response);
 	if (!response) {
 		fprintf(stderr, "json_tokener_parse() failed\n");
@@ -281,9 +293,10 @@ int refresh_token()
 	curl_easy_cleanup(curl);
 	if (chunk.response)
 		free(chunk.response);
-	
+
 	if (!access_token_valid()) {
-		fprintf(stderr, "Access token is still invalid after refreshing, something has gone horribly wrong\n");
+		fprintf(stderr,
+			"Access token is still invalid after refreshing, something has gone horribly wrong\n");
 		return -1;
 	}
 
