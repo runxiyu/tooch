@@ -279,6 +279,12 @@ int refresh_token()
 	curl_easy_cleanup(curl);
 	if (chunk.response)
 		free(chunk.response);
+	
+	if (!access_token_valid()) {
+		fprintf(stderr, "Access token is still invalid after refreshing, something has gone horribly wrong\n");
+		return -1;
+	}
+
 	return result;
 }
 
@@ -304,11 +310,6 @@ int main(int argc, char *argv[])
 			fprintf(stderr, "refresh_token() failed\n");
 			return 1;
 		}
-	}
-
-	if (!access_token_valid()) {
-		fprintf(stderr, "No valid access token, exiting\n");
-		return 1;
 	}
 
 	printf("%s\n", token.access_token);
