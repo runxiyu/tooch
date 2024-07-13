@@ -17,3 +17,7 @@ Most of these are written in C, Go, shell script, and occasionally prototypes in
 Only GNU Make is supported. Users on BSD systems should call `gmake` instead of `make`.
 
 The top-level makefile simply builds subdirectories. Each subdirectory is a phony target, so you could type `make sjauth` to build `sjauth`. The resulting binary is copied to `bin/sjauth`. The `install` target *additionally* causes the binaries to be copied over to `~/.local/bin/`.
+
+## Contributing
+
+Issues and post requests submitted via the [Codeberg](https://codeberg.org/runxiyu/tooch) and [Github](https://github.com/runxiyu/tooch) repositories are accepted. However, the maintainer prefers [emailed patches](https://git-send-email.io) and emailed bug reports, to the [mailing list](https://lists.sr.ht/~runxiyu/ykps).
