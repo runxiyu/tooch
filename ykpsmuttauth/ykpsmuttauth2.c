@@ -54,7 +54,7 @@ int read_token_file(const char *filename)
 		return -1;
 	}
 
-	__off_t length = st.st_size;
+	off_t length = st.st_size;
 
 	FILE *file = fopen(filename, "r");
 	if (!file) {
