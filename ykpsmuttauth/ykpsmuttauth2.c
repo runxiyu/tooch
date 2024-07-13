@@ -54,7 +54,7 @@ int read_token_file(const char *filename)
 		return -1;
 	}
 
-	long length = st.st_size;
+	__off_t length = st.st_size;
 
 	FILE *file = fopen(filename, "r");
 	if (!file) {
@@ -220,9 +220,11 @@ int refresh_token()
 	}
 
 	char post_fields[8192];
+
+	// FIXME: URL escaping is probably warranted here.
 	if (snprintf(post_fields, sizeof(post_fields),
 		     "client_id=%s&tenant=%s&refresh_token=%s&grant_type=refresh_token",
-		     CLIENTID, TENANT, token.refresh_token) == 8192) {
+		     CLIENTID, TENANT, token.refresh_token) >= 8192) {
 		fprintf(stderr, "post_fields overflow\n");
 		return -1;
 	}
