@@ -16,6 +16,7 @@ The Go implementation has no dependencies other than the Go standard library. Th
 
 ## Usage
 
+For the Go implementation,
 ```
 Usage of ./ykpsmuttauth:
   -authorize string
@@ -24,6 +25,26 @@ Usage of ./ykpsmuttauth:
     	(required) persistent token storage
 ```
 
+For the C implementation,
 ```
 Usage: ./ykpsmuttauth2 <tokenfile>
+```
+
+## Using with [`aerc`](https://sr.ht/~rjarry/aerc/)
+
+First run the Go implementation with `ykpsmuttauth -tokenfile ~/.cache/aerc/token.txt -authorize s65535@ykpaoschool.cn`.
+
+```ini
+[school]
+from              = Your Name <s65535@ykpaoschool.cn>
+default           = INBOX
+copy-to           = Sent Items
+source            = imaps+xoauth2://s65535%40ykpaoschool.cn@outlook.office365.com
+outgoing          = smtp+xoauth2://s65535%40ykpaoschool.cn@outlook.office365.com:587
+# To use the Go implementation:
+source-cred-cmd   = ykpsmuttauth -tokenfile ~/.cache/aerc/token.txt
+outgoing-cred-cmd = ykpsmuttauth -tokenfile ~/.cache/aerc/token.txt
+# Or to use the C implementation:
+# source-cred-cmd   = ykpsmuttauth2 ~/.cache/aerc/token.txt
+# outgoing-cred-cmd = ykpsmuttauth2 ~/.cache/aerc/token.txt
 ```
