@@ -10,7 +10,7 @@ Most of these are written in C, Go, shell script, and occasionally prototypes in
 |`memch`|C|Help memorize classical Chinese texts|
 |`pdfutils`|Shell|Help manipulate PDFs|
 |`sjauth`|C|Log on to [STUWIRELESS](https://ykps.runxiyu.org/wifi)|
-|`ykpsmuttauth`|Go|Get XOAUTH2 tokens for mutt/aerc for Outlook|
+|`ykpsmuttauth`|Go, C|Get XOAUTH2 tokens for mutt/aerc for Outlook|
 
 ## Build
 
