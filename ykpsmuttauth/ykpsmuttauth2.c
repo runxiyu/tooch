@@ -224,11 +224,12 @@ int refresh_token()
 	if (!(post_fields = malloc(post_fields_size = snprintf(NULL, 0,
 							       "client_id=%s&tenant=%s&refresh_token=%s&grant_type=refresh_token",
 							       CLIENTID, TENANT,
-							       token.refresh_token))))
+							       token.refresh_token) + 1)))
 	{
 		fprintf(stderr, "malloc(): %s\n", strerror(errno));
 		return -1;
 	}
+
 	// FIXME: URL escaping is probably warranted here.
 	if (snprintf(post_fields, post_fields_size,
 		     "client_id=%s&tenant=%s&refresh_token=%s&grant_type=refresh_token",
