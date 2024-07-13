@@ -124,7 +124,7 @@ int write_token_file(const char *filename)
 		json_object_put(token_json);
 		return -1;
 	}
-	fprintf(file, "%s", data);
+	fputs(data, file);
 	fclose(file);
 	json_object_put(token_json);
 	return 0;
