@@ -7,5 +7,5 @@ steps:
       event: []
     image: alpine
     commands:
-      - apk add --no-cache build-base alpine-sdk gcc go curl-dev openssl-dev
+      - apk add --no-cache build-base alpine-sdk gcc go curl-dev openssl-dev ncurses-dev
       - make

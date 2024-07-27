@@ -7,5 +7,5 @@ steps:
       event: []
     image: archlinux
     commands:
-      - pacman --noconfirm -Sy make gcc pkgconf openssl curl
+      - pacman --noconfirm -Sy make gcc pkgconf openssl curl ncurses
       - make
