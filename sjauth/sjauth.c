@@ -3,6 +3,10 @@
  *
  * Copyright (c) 2024 Runxi Yu <https://runxiyu.org>
  * SPDX-License-Identifier: BSD-2-Clause
+ *
+ * BUG: We're using fixed-size buffers. They should be far larger than necessary
+ * for network authentication, but in case you have any issues with segmentation
+ * faults, increase the buffer size.
  */
 
 #include <stdio.h>
