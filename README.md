@@ -2,7 +2,7 @@
 
 Most of these are written in C, Go, shell script, and occasionally prototypes in Python. While I try to make things portable, sometimes I might foget, or sometimes GNU Bash extensions are just too convenient, so there is no guarantee that any of this would run on macOS. They should, however, at least work on Alpine and Fedora, and on most other Linux-based systems too.
 
-![CI status](https://ci.codeberg.org/api/badges/13559/status.svg)
+[![CI status](https://ci.codeberg.org/api/badges/13559/status.svg)](https://ci.codeberg.org/repos/13559)
 
 ## Contents
 
