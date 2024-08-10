@@ -97,14 +97,14 @@ int login(const char *username, const char *password)
 int main(int argc, char *argv[])
 {
 	if (argc != 3) {
-		fprintf(stderr, "%s: Invalid arguments. The first argument shall be your username, and the second shall be the name of the environment variable containing your password.\n", argv[0]);
+		fprintf(stderr, "Usage: %s username passvar\n\tusername is your YK Pao School username, such as s65535\n\tpassvar is the name of an environment variable containing your password\n", argv[0]);
 		return EINVAL;
 	}
 
 	const char *username = argv[1];
 	const char *password = getenv(argv[2]);
 	if (!password) {
-		fprintf(stderr, "%s: Environment variable %s does not exist. You shall cause the environment variable identified by %s to contain your password.\n", argv[0], argv[2], argv[2]);
+		fprintf(stderr, "%s: Environment variable %s does not exist\n", argv[0], argv[2]);
 		return EINVAL;
 	}
 
