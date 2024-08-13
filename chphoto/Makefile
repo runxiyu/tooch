@@ -4,4 +4,4 @@ chphoto: chphoto.go
 	go build
 
 clean:
-	rm chphoto
+	rm -f chphoto

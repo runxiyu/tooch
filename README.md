@@ -1,24 +1,23 @@
 # Scripts, utilities, and other files related to life at YK Pao School
 
-Most of these are written in C, Go, shell script, and occasionally prototypes in Python. While I try to make things portable, sometimes I might foget, or sometimes GNU Bash extensions are just too convenient, so there is no guarantee that any of this would run on macOS. They should, however, at least work on Alpine and Fedora, and on most other Linux-based systems too.
-
-[![CI status](https://ci.codeberg.org/api/badges/13559/status.svg)](https://ci.codeberg.org/repos/13559)
+While I try to make things portable, sometimes I might foget, so there is no guarantee that any of this would run on macOS. They should, however, at least work on Alpine and Fedora, and on most other Linux-based systems too.
 
 ## Contents
 
-|Program|Language|Description|
-|--|--|--|
-|`chphoto`|Go|Change Outlook profile photos|
-|`memch`|C|Help memorize classical Chinese texts|
-|`pdfutils`|Shell|Help manipulate PDFs|
-|`sjauth`|C|Log on to [STUWIRELESS](https://ykps.runxiyu.org/wifi)|
-|`ykpsmuttauth`|Go, C|Get XOAUTH2 tokens for mutt/aerc for Outlook|
+|   Program    |Language|                      Description                     |
+|--------------|--------|------------------------------------------------------|
+|`chphoto`     |Go      |Change Outlook profile photos                         |
+|`memch`       |C       |Help memorize classical Chinese texts                 |
+|`pdfutils`    |Shell   |Help manipulate PDFs                                  |
+|`sjauth`      |C       |Log on to [STUWIRELESS](https://ykps.runxiyu.org/wifi)|
+|`ykpsmuttauth`|Go, C   |Get XOAUTH2 tokens for mutt/aerc for Outlook          |
+|`cieresults`  |Python  |Poll the IGCSE results page                           |
 
 ## Build
 
-Only GNU Make is supported. Users on BSD systems should call `gmake` instead of `make`.
+There is a Makefile in each subdirectory that builds the relevant program.
 
-The top-level makefile simply builds subdirectories. Each subdirectory is a phony target, so you could type `make sjauth` to build `sjauth`. The resulting binary is copied to `bin/sjauth`. The `install` target *additionally* causes the binaries to be copied over to `~/.local/bin/`.
+Only GNU Make is supported. Users on BSD systems should call `gmake` instead of `make`.
 
 ## Contributing
 
