@@ -1,16 +1,22 @@
-.TH memch 1 memch
-.SH NAME
-memch \- help memorize Chinese texts (i.e. poems)
-.SH SYNOPSIS
-.B memch
-filename
-[line]
-.SH DESCRIPTION
-.PP
+.Dd August 13, 2024
+.Dt memch 1
+.Os "YK Pao School Utilities"
+.
+.Sh NAME
+.Nm memch
+.Ndhelp memorize Chinese texts (i.e. poems)
+.
+.Sh SYNOPSIS
+.Nm
+.Ar filename
+.Ar [line]
+.
+.Sh DESCRIPTION
+.Pp
 The
-.B memch
+.Nm
 utility reads UTF-8 Simplified Chinese text from
-.IR file ","
+.Em file ","
 seperates them by Chinese punctuation into `segments', replaces every
 alternating segment with blanks, displays the rest (punctuation is always
 displayed and is not a part of segments), and asks the user for blanked
@@ -19,19 +25,24 @@ segments, turning the segment green if it matches, yellow if it does not match
 but the subsequent retry is correct (unless if the input is blank), and red if
 both the current try and the subsequent retry do not match.  After all input
 attempts for the blank segment the segment text is also showed.  If
-.IR line
+.Em line
 is provided, only the line with the specified line number is used from
-.IR filename "."
-.SH AUTHORS
-Runxi Yu <https://runxiyu.org/> wrote this program.
-.SH BUGS
+.Em filename "."
+.
+.Sh AUTHORS
+.Pp
+.An Runxi Yu Aq Mt me@runxiyu.org
+.
+.Sh BUGS
+.Pp
 Because of character width issues, the C version doesn't currently
 work for Chinese text. Please poke runxiyu if you know how to
 display wide characters in ncurses.
-.PP
+.Pp
 Please do not use this program on files where there are more than 1000
 characters in one line. The behaviour on such an input file is undefined.
-.SH LICENSE
-.PP
+.
+.Sh LICENSE
+.Pp
 This program is licensed under the 2-clause BSD license. Please read the
 LICENSE file for details.
