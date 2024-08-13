@@ -1,10 +1,6 @@
 # Scripts, utilities, and other files related to life at YK Pao School
 
-While I try to make things portable, sometimes I might foget, so there is no guarantee that any of this would run on macOS. They should, however, at least work on Alpine and Fedora, and on most other Linux-based systems too.
-
-## Contents
-
-|   Program    |Language|                      Description                     |
+|     Name     |Language|                      Description                     |
 |--------------|--------|------------------------------------------------------|
 |`chphoto`     |Go      |Change Outlook profile photos                         |
 |`memch`       |C       |Help memorize classical Chinese texts                 |
@@ -15,9 +11,7 @@ While I try to make things portable, sometimes I might foget, so there is no gua
 
 ## Build
 
-There is a Makefile in each subdirectory that builds the relevant program.
-
-Only GNU Make is supported. Users on BSD systems should call `gmake` instead of `make`.
+There is a Makefile in each subdirectory that builds the relevant program. They should support both BSD Make and GNU Make.
 
 ## Contributing
 
