@@ -28,7 +28,7 @@ while True:
     tl = t.lower()
     if "英文" in tl or "Math" in tl:
         print("\a\a\aSending email")
-        with open("/tmp/ekekek.eml", "w") as p:
+        with open("ekekek.eml", "w") as p:
             p.write(
                 "To: me@runxiyu.org\r\n"
                 + "From: me@runxiyu.org\r\n"
@@ -36,12 +36,16 @@ while True:
                 + 'Content-Type: text/html; charset="utf-8"\r\n'
                 + "Content-Transfer-Encoding: base64\r\n"
                 + "\r\n"
-                + base64.standard_b64encode(t.encode("utf-8")).decode("utf-8", "error")
+                + base64.standard_b64encode(
+                    ("<style>%s</style>" % open("screen.css").read() + t).encode(
+                        "utf-8"
+                    )
+                ).decode("utf-8", "error")
             )
             p.close()
             print(
                 "\a\a\aDone! Sendmail finished with %s"
-                % repr(os.system("/sbin/sendmail -i me@runxiyu.org < /tmp/ekekek.eml"))
+                % repr(os.system("/sbin/sendmail -i me@runxiyu.org < ekekek.eml"))
             )
         break
     else:
