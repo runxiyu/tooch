@@ -26,7 +26,7 @@ while True:
         .decode("utf-8", "replace")
     )
     tl = t.lower()
-    if "英文" in tl or "Math" in tl or True:
+    if "英文" in tl or "Math" in tl:
         print("\a\a\aSending email")
         with open("/tmp/ekekek.eml", "w") as p:
             p.write(
