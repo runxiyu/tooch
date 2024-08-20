@@ -37,9 +37,11 @@ while True:
                 + "Content-Transfer-Encoding: base64\r\n"
                 + "\r\n"
                 + base64.standard_b64encode(
-                    ("<style>%s</style>" % open("screen.css").read() + t).encode(
-                        "utf-8"
-                    )
+                    (
+                        "<style>body{min-width:60rem;}%s</style>"
+                        % open("screen.css").read()
+                        + t
+                    ).encode("utf-8")
                 ).decode("utf-8", "error")
             )
             p.close()
