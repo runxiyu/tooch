@@ -4,10 +4,11 @@
 |--------------|--------|------------------------------------------------------|
 |`chphoto`     |Go      |Change Outlook profile photos                         |
 |`memch`       |C       |Help memorize classical Chinese texts                 |
-|`pdfutils`    |Shell   |Help manipulate PDFs                                  |
+|`pdfutils`    |Shell   |Scripts to manipulate PDFs                            |
 |`sjauth`      |C       |Log on to [STUWIRELESS](https://ykps.runxiyu.org/wifi)|
-|`ykpsmuttauth`|Go, C   |Get XOAUTH2 tokens for mutt/aerc for Outlook          |
+|`ykpsmuttauth`|Go, C   |Get Outlook XOAUTH2 tokens for mutt/aerc              |
 |`cieresults`  |Python  |Poll the IGCSE results page                           |
+|`calgen`      |Python  |Generate iCalendar from PowerSchool timetables        |
 
 ## Build
 
