@@ -1,14 +1,14 @@
 # Scripts, utilities, and other files related to life at YK Pao School
 
-|     Name     |Language|                      Description                     |
-|--------------|--------|------------------------------------------------------|
-|`chphoto`     |Go      |Change Outlook profile photos                         |
-|`memch`       |C       |Help memorize classical Chinese texts                 |
-|`pdfutils`    |Shell   |Scripts to manipulate PDFs                            |
-|`sjauth`      |C       |Log on to [STUWIRELESS](https://ykps.runxiyu.org/wifi)|
-|`ykpsmuttauth`|Go, C   |Get Outlook XOAUTH2 tokens for mutt/aerc              |
-|`cieresults`  |Python  |Poll the IGCSE results page                           |
-|`calgen`      |Python  |Generate iCalendar from PowerSchool timetables        |
+| Name           | Language | Description                                            | Dependencies                        |
+| -------------- | -------- | ------------------------------------------------------ | ----------------------------------- |
+| `chphoto`      | Go       | Change Outlook profile photos                          | `msal`                              |
+| `memch`        | C        | Help memorize classical Chinese texts                  | `ncursesw`                          |
+| `pdfutils`     | Shell    | Scripts to manipulate PDFs                             | (Various)                           |
+| `sjauth`       | C        | Log on to [STUWIRELESS](https://ykps.runxiyu.org/wifi) | `libcurl`                           |
+| `ykpsmuttauth` | Go, C    | Get Outlook XOAUTH2 tokens for mutt/aerc               | `libcurl`, `c-json`, `openssl`      |
+| `cieresults`   | Python   | Poll the IGCSE results page                            | `requests`, `beautifulsoup4`        |
+| `calgen`       | Python   | Generate iCalendar from PowerSchool timetables         | `requests`, `beautifulsoup4`, `ics` |
 
 ## Build
 
