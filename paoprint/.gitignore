@@ -1,0 +1,6 @@
+*.pcapng
+paoprint
+*.o
+*.pjl
+*.ps
+*.pdf

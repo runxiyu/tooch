@@ -1,14 +1,15 @@
 # Scripts, utilities, and other files related to life at YK Pao School
 
-| Name           | Language | Description                                            | Dependencies                        |
-| -------------- | -------- | ------------------------------------------------------ | ----------------------------------- |
-| `chphoto`      | Go       | Change Outlook profile photos                          | `msal`                              |
-| `memch`        | C        | Help memorize classical Chinese texts                  | `ncursesw`                          |
-| `pdfutils`     | Shell    | Scripts to manipulate PDFs                             | (Various)                           |
-| `sjauth`       | C        | Log on to [STUWIRELESS](https://ykps.runxiyu.org/wifi) | `libcurl`                           |
-| `ykpsmuttauth` | Go, C    | Get Outlook XOAUTH2 tokens for mutt/aerc               | `libcurl`, `c-json`, `openssl`      |
-| `cieresults`   | Python   | Poll the IGCSE results page                            | `requests`, `beautifulsoup4`        |
-| `calgen`       | Python   | Generate iCalendar from PowerSchool timetables         | `requests`, `beautifulsoup4`, `ics` |
+| Name           | Language | Description                                            | Dependencies                                                                                                                                                          |
+| -------------- | -------- | ------------------------------------------------------ | ---------------------------------------                                                                                                                               |
+| `chphoto`      | Go       | Change Outlook profile photos                          | [MSAL](https://github.com/AzureAD/microsoft-authentication-library-for-go)                                                                                            |
+| `memch`        | C        | Help memorize classical Chinese texts                  | [ncursesw](https://invisible-island.net/ncurses/)                                                                                                                     |
+| `pdfutils`     | Shell    | Scripts to manipulate PDFs                             | [Ghostscript](https://www.ghostscript.com), [Chromium](https://www.chromium.org)                                                                                      |
+| `sjauth`       | C        | Log on to [STUWIRELESS](https://ykps.runxiyu.org/wifi) | [libcurl](https://curl.se/libcurl/)                                                                                                                                   |
+| `ykpsmuttauth` | Go, C    | Get Outlook XOAUTH2 tokens for mutt/aerc               | [libcurl](https://curl.se/libcurl/), [json-c](https://github.com/json-c/json-c), [OpenSSL](https://www.openssl.org)                                                   |
+| `cieresults`   | Python   | Poll the IGCSE results page to IRC                     | [requests](http://docs.python-requests.org/), [Beautiful Soup](https://www.crummy.com/software/BeautifulSoup/bs4/), [miniirc](https://github.com/luk3yx/miniirc)      |
+| `calgen`       | Python   | Generate iCalendar from PowerSchool timetables         | [requests](http://docs.python-requests.org/), [Beautiful Soup](https://www.crummy.com/software/BeautifulSoup/bs4/), [Ics.py](https://icspy.readthedocs.io/en/stable/) |
+| `paoprint`     | C        | LPD/PDL student printer driver for the SJ Campus       | [Ghostscript](https://www.ghostscript.com)                                                                                                                            |
 
 ## Build
 
