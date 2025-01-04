@@ -2,21 +2,8 @@
 
 This simple program allows you to obtain an XOAUTH2 token for your YK Pao School Microsoft account. This is useful as a replacement for [`mutt_oauth2.py`](https://raw.githubusercontent.com/muttmua/mutt/master/contrib/mutt_oauth2.py).
 
-There are two implementations. One is a rather complete Go implementation, `ykpsmuttauth`, and one is a not really complete C implementation, `ykpsmuttauth2`.
-
-|Feature|Go|C|
-|-------|--|-|
-|Authorize an account for the first time|Yes|No|
-|Retrieve a new access token from a refresh token|Yes|Yes|
-|Print an already-valid access token|Yes|Yes|
-
-The C implementation can read files produced by the Go implementation. It doesn't work the other way around because of some broken timezone handling.
-
-The Go implementation has no dependencies other than the Go standard library. The C implementation depends on a POSIX standard library, and `openssl` for hashing, `libcurl` for HTTP requests, and `json-c` for JSON parsing and writing.
-
 ## Usage
 
-For the Go implementation,
 ```
 Usage of ./ykpsmuttauth:
   -authorize string
@@ -25,14 +12,10 @@ Usage of ./ykpsmuttauth:
     	(required) persistent token storage
 ```
 
-For the C implementation,
-```
-Usage: ./ykpsmuttauth2 <tokenfile>
-```
 
 ## Using with [`aerc`](https://sr.ht/~rjarry/aerc/)
 
-First run the Go implementation with `ykpsmuttauth -tokenfile ~/.cache/aerc/token.txt -authorize s65535@ykpaoschool.cn`.
+First run `ykpsmuttauth -tokenfile ~/.cache/aerc/token.txt -authorize s65535@ykpaoschool.cn`.
 
 ```ini
 [school]
